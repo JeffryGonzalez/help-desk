@@ -8,6 +8,17 @@
     - `ng new frontend --skip-tests --skip-git`
         - CSS
         - no SSR
+- Add Yarp.ReverseProxy package and configure reverse proxy
+- Create `dev-environment`
+    - Local auth is with `mock-oauth2-server` at port 9999
+    - Postgres 15.5-bullseye
+        - user is user, password is password
+        - create a database called `issuetracker` on init.
+    - Adminer added to see database at port 9090
+- Added BFF and OpenId Configuration to API
+- Frontend - added NGRX Libs (they are legacy peer deps - will update to 17 when available)
+
+
 
 ## References
 
