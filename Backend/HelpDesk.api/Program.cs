@@ -1,3 +1,7 @@
+using Marten;
+using Wolverine;
+using Wolverine.Marten;
+
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     WebRootPath = Path.Combine("wwwroot", "browser")
@@ -25,6 +29,19 @@ builder.Services.AddAuthentication(options =>
 
 });
 
+
+var connectionString = builder.Configuration.GetConnectionString("database") ?? throw new Exception("We need a database");
+
+builder.Services.AddMarten(options =>
+{
+    options.Connection(connectionString);
+
+}).UseLightweightSessions().IntegrateWithWolverine();
+
+builder.Host.UseWolverine(opts =>
+{
+    opts.Policies.AutoApplyTransactions();
+});
 var app = builder.Build();
 
 app.UseHttpsRedirection();
