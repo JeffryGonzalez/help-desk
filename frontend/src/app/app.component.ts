@@ -7,7 +7,10 @@ import { AuthComponent } from "./auth/state/auth.component";
     selector: 'app-root',
     standalone: true,
     template: `
+    <main class="container">
     <app-auth />
+    <router-outlet />
+</main>
   `,
     styleUrl: './app.component.css',
     imports: [CommonModule, RouterOutlet, AuthComponent]

@@ -1,0 +1,8 @@
+{
+    "files.autoSave": "onFocusChange",
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
+    "tailwindCSS.emmetCompletions": true,
+    "editor.minimap.enabled": false
+}
