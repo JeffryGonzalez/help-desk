@@ -1,9 +1,14 @@
 using Duende.Bff;
 using HelpDesk.api.Auth;
 using HelpDesk.api.Auth.ReadModels;
+using HelpDesk.api.User.ReadModels;
 using Marten;
 using Marten.Events.Projections;
+using Marten.Services.Json;
+using Newtonsoft.Json.Converters;
 using Oakton;
+using System.Text.Json.Serialization;
+using Weasel.Core;
 using Wolverine;
 using Wolverine.Http;
 using Wolverine.Marten;
@@ -11,6 +16,11 @@ using Wolverine.Marten;
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     WebRootPath = Path.Combine("wwwroot", "browser")
+});
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
 builder.Host.ApplyOaktonExtensions();
@@ -43,7 +53,13 @@ var connectionString = builder.Configuration.GetConnectionString("database") ?? 
 builder.Services.AddMarten(options =>
 {
     options.Connection(connectionString);
-    options.Projections.Add<UserSummaryProjection>(ProjectionLifecycle.Inline);
+    options.Projections.Add<AuthSummaryProjection>(ProjectionLifecycle.Inline);
+    options.Projections.Add<UserStateProjection>(ProjectionLifecycle.Inline);
+    options.UseDefaultSerialization(
+        EnumStorage.AsString,
+         nonPublicMembersStorage: NonPublicMembersStorage.All,
+            serializerType: SerializerType.SystemTextJson
+        );
 
 }).UseLightweightSessions().IntegrateWithWolverine();
 
@@ -64,7 +80,7 @@ app.UseStaticFiles();
 app.MapBffManagementEndpoints();
 app.UseAuthorization();
 
-if(app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.MapReverseProxy();
 }

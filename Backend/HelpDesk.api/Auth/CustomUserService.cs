@@ -23,7 +23,7 @@ public class CustomUserService : DefaultUserService
 
             if (sub is not null)
             {
-                var user = await _session.Query<UserSummary>().SingleOrDefaultAsync(u => u.Sub == sub.Value);
+                var user = await _session.Query<AuthSummary>().SingleOrDefaultAsync(u => u.Sub == sub.Value);
                 if (user is not null)
                 {
                     _userId = user.Id;

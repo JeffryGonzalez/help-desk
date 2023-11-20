@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="User\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -21,6 +20,7 @@
     <PackageReference Include="WolverineFx" Version="1.11.1" />
     <PackageReference Include="WolverineFx.FluentValidation" Version="1.11.1" />
     <PackageReference Include="WolverineFx.Http" Version="1.11.1" />
+    <PackageReference Include="WolverineFx.Http.Marten" Version="1.11.1" />
     <PackageReference Include="WolverineFx.Marten" Version="1.11.1" />
     <PackageReference Include="WolverineFx.Postgresql" Version="1.11.1" />
     <PackageReference Include="WolverineFx.RDBMS" Version="1.11.1" />

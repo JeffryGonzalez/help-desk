@@ -10,6 +10,8 @@ import { reducers } from './state';
 import { authFeature } from './auth/state';
 import { AuthEffects } from './auth/state/effects';
 import { provideEffects } from '@ngrx/effects';
+import { userFeature } from './user/state';
+import { UserEffects } from './user/state/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +19,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([secureApiInterceptor])),
     provideStore(reducers),
     provideState(authFeature),
+    provideState(userFeature),
     isDevMode() ? provideStoreDevtools() : [],
-    provideEffects([AuthEffects])
+    provideEffects([AuthEffects, UserEffects])
   ],
 };

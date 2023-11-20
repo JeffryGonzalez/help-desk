@@ -4,11 +4,13 @@ import { AuthDocuments } from "./actions";
 export type AuthState = {
     isAuthenticated: boolean;
     sub: string | undefined;
+    streamId: string | undefined;
 }
 
 const initialState:AuthState = {
     isAuthenticated: false,
-    sub: undefined
+    sub: undefined,
+    streamId: undefined
 }
 
 export const authFeature = createFeature({
