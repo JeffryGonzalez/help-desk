@@ -1,6 +1,16 @@
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    WebRootPath = Path.Combine("wwwroot", "browser")
+});
+
+builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+
+if(app.Environment.IsDevelopment())
+{
+    app.MapReverseProxy();
+}
 
 app.Run();
