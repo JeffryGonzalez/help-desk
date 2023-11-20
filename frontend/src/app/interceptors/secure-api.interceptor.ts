@@ -1,4 +1,5 @@
 import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
+import { getApiUrl } from '../auth/state';
 // Adapted from https://github.com/damienbod/bff-aspnetcore-angular/blob/main/ui/src/app/secure-api.interceptor.ts
 
 export function secureApiInterceptor(
@@ -19,14 +20,3 @@ export function secureApiInterceptor(
   return next(request);
 }
 
-export function getApiUrl() {
-  const backendHost = getCurrentHost();
-
-  return `${backendHost}/api/`;
-}
-
-function getCurrentHost() {
-  const host = window.location.host;
-  const url = `${window.location.protocol}//${host}`;
-  return url;
-}
