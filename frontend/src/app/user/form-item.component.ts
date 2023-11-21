@@ -1,32 +1,58 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormEditing, FormEditingItem, MappedFormData } from '../utils';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  DoCheck,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  afterRender,
+} from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormEditingItem } from '../utils';
 
-const editIcon = ``;
+type EditingOperations = 'editing' | 'saved' | 'cancelled';
+
+export type EditingOperation<T> = {
+  item: FormEditingItem<T>;
+  newValue?: unknown;
+  operation: EditingOperations;
+};
+
 @Component({
   selector: 'app-form-item',
   standalone: true,
   template: `
     <div class="f">
       <div class="form-control">
-        <pre>
-    KEY: {{ editingKey ?? 'None' }} FIELD: {{ item.field }} EQUALS: {{ item.field === editingKey }}
-</pre
+        <label class="label" [for]="item.field"
+          ><span class="label-text">{{ item.displayValue }}</span></label
         >
         @if(item.editing === false) {
         <div class="flex-1">
+          <span tabindex="0" (keyup)="handleKeysForTabbing($event)">
+            <input
+              [id]="item.field"
+              class="input input-bordered "
+              value="{{
+                item.value || 'No ' + item.displayValue + ' Provided'
+              }}"
+              disabled
+            />
+          </span>
           <button
-            (click)="editField()"
+            (click)="onItemOperation('editing')"
             type="button"
-            class=""
-          [disabled]=" item.field !== editingKey"
+            class="ml-2 btn btn-xs"
+            *ngIf="!isEditing()"
           >
             <span>✏️</span>
           </button>
-          <span class="ml-4 font-bold max-w-md">{{
-            item.value || 'No ' + item.displayValue + ' Provided'
-          }}</span>
         </div>
 
         } @else {
@@ -34,61 +60,70 @@ const editIcon = ``;
           <input
             type="text"
             [id]="item.field"
+            (keyup)="handleKeysForInput($event)"
             class="input input-bordered"
             #field
           />
           <button
             type="button"
-            (click)="saveField(field.value)"
+            (click)="onItemOperation('saved')"
+            title="save (Enter)"
             class="btn btn-xs"
           >
             <span>✅</span>
           </button>
 
-          <button type="button" (click)="cancelField()" class="btn btn-xs">
+          <button
+            type="button"
+            (click)="onItemOperation('cancelled')"
+            title="cancel (Esc)"
+            class="btn btn-xs"
+          >
             <span>🚫</span>
           </button>
         </div>
-        } @if(item.dirty) {
-        <button type="button" (click)="revertField()" class="btn btn-xs">
-          🙃
-        </button>
-
         }
       </div>
     </div>
   `,
+
   imports: [ReactiveFormsModule, NgIf],
 })
-export class FormItemComponen<T, TForm> {
+export class FormItemComponent<T, TForm> implements OnChanges {
   @Input({ required: true }) item!: FormEditingItem<T>;
   @Input({ required: true }) editingKey: keyof TForm | undefined;
+  @ViewChild('field') field!: ElementRef<HTMLInputElement>;
+  @Output()
+  itemOperation = new EventEmitter<EditingOperation<T>>();
 
-  @Output() itemOperation = new EventEmitter<{
-    item: FormEditingItem<T>;
-    newValue?: unknown;
-    operation: 'editing' | 'saved' | 'cancelled' | 'reverted';
-  }>();
-
-  editIcon = editIcon;
-  saveField(value: unknown) {
-    this.itemOperation.emit({
-      item: this.item,
-      operation: 'saved',
-      newValue: value,
-    });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['editingKey']) {
+      if (this.item.field === this.editingKey) {
+        setTimeout(() => this.field.nativeElement.focus(), 0);
+      }
+    }
+  }
+  handleKeysForInput(event: KeyboardEvent) {
+    if (event.code === 'Escape') {
+      this.onItemOperation('cancelled');
+    }
+    if (event.code === 'Enter') {
+      const t = event.target as HTMLInputElement;
+      this.onItemOperation('saved', t.value);
+    }
+  }
+  handleKeysForTabbing(event: KeyboardEvent) {
+    if (event.code === 'Enter') {
+      this.onItemOperation('editing');
+    }
   }
 
-  cancelField() {
-    //
-    this.itemOperation.emit({ item: this.item, operation: 'cancelled' });
+  isEditing() {
+    if (this.editingKey === undefined) return false;
+    return this.item.field !== this.editingKey;
   }
 
-  revertField() {
-    this.itemOperation.emit({ item: this.item, operation: 'reverted' });
-  }
-  editField() {
-    this.itemOperation.emit({ item: this.item, operation: 'editing' });
+  onItemOperation(operation: EditingOperations, newValue?: unknown) {
+    this.itemOperation.emit({ item: this.item, operation, newValue });
   }
 }
-
