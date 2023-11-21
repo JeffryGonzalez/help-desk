@@ -1,9 +1,6 @@
-import { NgIf } from '@angular/common';
+import { JsonPipe, NgIf } from '@angular/common';
 import {
-  AfterViewChecked,
-  AfterViewInit,
   Component,
-  DoCheck,
   ElementRef,
   EventEmitter,
   Input,
@@ -11,9 +8,8 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
-  afterRender,
 } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { FormEditingItem } from '../utils';
 
 type EditingOperations = 'editing' | 'saved' | 'cancelled';
@@ -87,7 +83,7 @@ export type EditingOperation<T> = {
     </div>
   `,
 
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule, NgIf, JsonPipe],
 })
 export class FormItemComponent<T, TForm> implements OnChanges {
   @Input({ required: true }) item!: FormEditingItem<T>;
@@ -103,12 +99,18 @@ export class FormItemComponent<T, TForm> implements OnChanges {
       }
     }
   }
+  hasErrors() {
+    if (this.item.validators === undefined) return null;
+    const ac = { value: this.item.value } as AbstractControl;
+    return this.item.validators.map((v) => v(ac));
+  }
   handleKeysForInput(event: KeyboardEvent) {
     if (event.code === 'Escape') {
       this.onItemOperation('cancelled');
     }
     if (event.code === 'Enter') {
       const t = event.target as HTMLInputElement;
+
       this.onItemOperation('saved', t.value);
     }
   }

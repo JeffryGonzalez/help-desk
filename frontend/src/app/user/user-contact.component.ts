@@ -1,10 +1,11 @@
-import { JsonPipe } from '@angular/common';
+import { JsonPipe, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { FormEditing, FormEditingItem, MappedFormData } from '../utils';
@@ -19,6 +20,10 @@ type FormEdit = FormEditing<UserContactEdit>;
   standalone: true,
   template: `
     <form [formGroup]="form" class="container">
+      <div
+        class="alert alert-error"
+        *ngIf="form.invalid && (form.touched || form.dirty)"
+      ></div>
       @for(key of keys; track key ) {
 
       <app-form-item
@@ -29,7 +34,7 @@ type FormEdit = FormEditing<UserContactEdit>;
       }
     </form>
   `,
-  imports: [ReactiveFormsModule, JsonPipe, FormItemComponent],
+  imports: [ReactiveFormsModule, JsonPipe, FormItemComponent, NgIf],
 })
 export class UserContactComponent implements OnInit {
   private readonly store = inject(Store);
@@ -38,9 +43,13 @@ export class UserContactComponent implements OnInit {
   keys: [keyof FormData];
   editingKey: keyof FormData | undefined;
   form: FormGroup<FormData> = new FormGroup<FormData>({
-    firstName: new FormControl<string>('', { nonNullable: true }),
+    firstName: new FormControl<string>('', {
+      nonNullable: true,
+    }),
     lastName: new FormControl<string>('', { nonNullable: true }),
-    emailAddress: new FormControl<string>('', { nonNullable: true }),
+    emailAddress: new FormControl<string>('', {
+      nonNullable: true,
+    }),
     phoneNumber: new FormControl<string>('', { nonNullable: true }),
   });
 
@@ -63,6 +72,7 @@ export class UserContactComponent implements OnInit {
         editing: false,
         dirty: false,
         displayValue: 'Email Address',
+        validators: [Validators.required],
       },
       phoneNumber: {
         field: 'phoneNumber',
