@@ -2,20 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthComponent } from "./auth/state/auth.component";
-import { UserContactComponent } from "./user/user-contact.component";
+import { HeaderComponent } from "./components/header.component";
 
 @Component({
     selector: 'app-root',
     standalone: true,
     template: `
-    <main class="container">
+    <app-header />
     <app-auth />
-    <app-user-contact />
+    <main class="container mx-auto">
+
     <router-outlet />
 </main>
   `,
     styleUrl: './app.component.css',
-    imports: [CommonModule, RouterOutlet, AuthComponent, UserContactComponent]
+    imports: [CommonModule, RouterOutlet, AuthComponent, HeaderComponent]
 })
 export class AppComponent  {
 

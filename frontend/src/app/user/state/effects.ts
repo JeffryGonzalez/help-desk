@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
-import { map, switchMap, tap } from 'rxjs';
+import { map, switchMap, tap, mergeMap } from 'rxjs';
 import { UserState } from '.';
 import { authFeature, getApiUrl } from '../../auth/state';
 import { AuthEvents } from '../../auth/state/actions';
@@ -34,12 +34,13 @@ export class UserEffects {
         ofType(UserContactCommands.updateItem),
         concatLatestFrom(() => this.store.select(authFeature.selectStreamId)),
         map(([action, streamId]) => ({ ...action, streamId })),
-        tap((a) => {
+        map((a) => {
           const path = this.camelToKebab(a.payload.operation);
           const url = this.url + `users/${a.streamId}/${path}`;
           const body = { value: a.payload.value[a.payload.operation] };
-          console.log(url, body);
-        })
+          return ({url, body})
+        }),
+        mergeMap(({url, body}) => this.http.put(url, body))
       ),
     {
       dispatch: false,

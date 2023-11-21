@@ -3,7 +3,7 @@ using Marten.Events.Aggregation;
 
 namespace HelpDesk.api.User.ReadModels;
 
-public class UserState
+public record UserState
 {
     public Guid Id { get; set; }
     public int Version { get; set; }
@@ -20,6 +20,13 @@ public class UserStateProjection : SingleStreamProjection<UserState>
             Id = @event.Id,
             Version = 1
         };
+    }
+
+    public UserState Apply(FirstNameUpdated @event, UserState current)
+    {
+       
+        return current with { ContactChannel = current.ContactChannel with { FirstName = @event.Value } };
+       
     }
 }
 public enum ContactChannelType

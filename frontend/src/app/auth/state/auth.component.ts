@@ -7,9 +7,7 @@ import { AuthCommands } from "./actions";
   selector: 'app-auth',
   standalone: true,
   template: `
-  <div>
-  <button (click)="logout()" class="btn btn-warning">Log out {{ user() }}</button>
-</div>`,
+ `,
 })
 export class AuthComponent implements OnInit {
   private readonly store = inject(Store);

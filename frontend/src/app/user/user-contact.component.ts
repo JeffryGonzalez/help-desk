@@ -1,5 +1,5 @@
 import { JsonPipe, NgIf } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, effect, inject } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -33,12 +33,14 @@ type FormEdit = FormEditing<UserContactEdit>;
       ></app-form-item>
       }
     </form>
+    <pre>{{ userContact() | json }}</pre>
   `,
   imports: [ReactiveFormsModule, JsonPipe, FormItemComponent, NgIf],
 })
 export class UserContactComponent implements OnInit {
   private readonly store = inject(Store);
   userContact = this.store.selectSignal(userFeature.selectContactChannel);
+
   formEditing: FormEdit;
   keys: [keyof FormData];
   editingKey: keyof FormData | undefined;
@@ -54,12 +56,14 @@ export class UserContactComponent implements OnInit {
   });
 
   constructor() {
+
     this.formEditing = {
       firstName: {
         field: 'firstName',
         editing: false,
         dirty: false,
         displayValue: 'First Name',
+        value: this.userContact()?.firstName ?? '',
       },
       lastName: {
         field: 'lastName',
@@ -84,15 +88,19 @@ export class UserContactComponent implements OnInit {
     this.keys = Object.keys(this.formEditing) as [keyof FormData];
   }
   ngOnInit(): void {
-    this.form.controls.firstName.setValue(this.userContact()?.firstName ?? '');
-    this.form.controls.lastName.setValue(this.userContact()?.lastName ?? '');
-    this.form.controls.emailAddress.setValue(
-      this.userContact()?.emailAddress ?? ''
-    );
-    this.form.controls.phoneNumber.setValue(
-      this.userContact()?.phoneNumber ?? ''
-    );
+    this.updateForm();
   }
+    private updateForm() {
+        this.form.controls.firstName.setValue(this.userContact()?.firstName ?? '');
+        this.form.controls.lastName.setValue(this.userContact()?.lastName ?? '');
+        this.form.controls.emailAddress.setValue(
+            this.userContact()?.emailAddress ?? ''
+        );
+        this.form.controls.phoneNumber.setValue(
+            this.userContact()?.phoneNumber ?? ''
+        );
+    }
+
   get firstName() {
     return this.form.controls.firstName;
   }
