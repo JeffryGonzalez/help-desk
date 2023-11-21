@@ -22,11 +22,17 @@ public class UserStateProjection : SingleStreamProjection<UserState>
         };
     }
 
-    public UserState Apply(FirstNameUpdated @event, UserState current)
-    {
-       
-        return current with { ContactChannel = current.ContactChannel with { FirstName = @event.Value } };
-       
+    public UserState Apply(UserContactEvent @event, UserState current) {
+
+        return @event switch
+        {
+            FirstNameUpdated e => current with { ContactChannel = current.ContactChannel with { FirstName = e.Value } },
+            LastNameUpdated e => current with { ContactChannel = current.ContactChannel with { LastName = e.Value } },
+            PhoneNumberUpdated e => current with { ContactChannel = current.ContactChannel with { PhoneNumber = e.Value } },
+            EmailAddressUpdated e => current with { ContactChannel = current.ContactChannel with { EmailAddress = e.Value } },
+            _ => throw new Exception("Chaos")
+        };
+     
     }
 }
 public enum ContactChannelType

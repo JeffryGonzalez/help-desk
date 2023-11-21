@@ -85,9 +85,9 @@ export type EditingOperation<T> = {
 
   imports: [ReactiveFormsModule, NgIf, JsonPipe],
 })
-export class FormItemComponent<T, TForm> implements OnChanges {
+export class FormItemComponent<T> implements OnChanges {
   @Input({ required: true }) item!: FormEditingItem<T>;
-  @Input({ required: true }) editingKey: keyof TForm | undefined;
+  @Input({ required: true }) editingKey: string | undefined;
   @ViewChild('field') field!: ElementRef<HTMLInputElement>;
   @Output()
   itemOperation = new EventEmitter<EditingOperation<T>>();

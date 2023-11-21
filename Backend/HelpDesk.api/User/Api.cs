@@ -8,19 +8,30 @@ namespace HelpDesk.api.User;
 
 public static class Api
 {
+    
     [Get("api/users/{id:guid}")]
     public static IResult Get([Document] UserState response)
     {
         return TypedResults.Ok(response);
     }
 
-    [Put("/api/users/{id:guid}/first-name")]
-    public static async Task<ModifyContactInformation> PutFirstName(ContactModificationRequest request, Guid id, IMessageBus bus) 
+    [Put("/api/users/{id:guid}/{op:required}")]
+    public static async Task<IResult> PutFirstName(ContactModificationRequest request, Guid id, IMessageBus bus, string op, HttpContext context) 
     {
-        var command = new ModifyContactInformation.ModifyContactFirstName(id, request.Value);
-        await bus.PublishAsync(command);
-        return command;
+        ModifyContactInformation cmd = op switch
+        {
+            "first-name" => new ModifyContactFirstName(id, request.Value),
+            "last-name" => new ModifyContactLastName(id, request.Value),
+            "email-address" => new ModifyContactEmailAddress(id, request.Value),
+            "phone-number" => new ModifyContactPhoneNumber(id, request.Value),
+            _ => throw new BadHttpRequestException("invalid path")
+        };
+       
+       
+        await bus.PublishAsync(cmd);
+        return TypedResults.Accepted(context.Request.Path);
     }
+
 }
 
 public record ContactModificationRequest
@@ -28,7 +39,3 @@ public record ContactModificationRequest
     public string Value { get; set; } = string.Empty;
 }
 
-public record ModifyContactInformation(Guid Id, string Value)
-{
-    public record ModifyContactFirstName(Guid Id, string Value): ModifyContactInformation(Id, Value);
-}

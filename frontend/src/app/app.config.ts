@@ -1,5 +1,5 @@
 import { ApplicationConfig, isDevMode } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -12,15 +12,18 @@ import { AuthEffects } from './auth/state/effects';
 import { provideEffects } from '@ngrx/effects';
 import { userFeature } from './user/state';
 import { UserEffects } from './user/state/effects';
+import { pendingUserIncidentFeature } from './user/state/pending-incidents';
+import { PendingUserIncidentEffects } from './user/state/pending-incidents/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withViewTransitions(), withComponentInputBinding()),
     provideHttpClient(withInterceptors([secureApiInterceptor])),
     provideStore(reducers),
     provideState(authFeature),
     provideState(userFeature),
+    provideState(pendingUserIncidentFeature),
     isDevMode() ? provideStoreDevtools() : [],
-    provideEffects([AuthEffects, UserEffects])
+    provideEffects([AuthEffects, UserEffects, PendingUserIncidentEffects])
   ],
 };

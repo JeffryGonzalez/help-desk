@@ -1,109 +1,83 @@
 import { JsonPipe, NgIf } from '@angular/common';
-import { Component, OnInit, computed, effect, inject } from '@angular/core';
 import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
+  Component,
+  OnInit,
+  computed,
+  inject
+} from '@angular/core';
+import {
+  Validators
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { FormEditing, FormEditingItem, MappedFormData } from '../utils';
-import { userFeature } from './state';
-import { UserContactCommands, UserContactEdit } from './state/actions';
 import { EditingOperation, FormItemComponent } from './form-item.component';
+import { UserContact, userFeature } from './state';
+import { UserContactCommands, UserContactEdit } from './state/actions';
 
-type FormData = MappedFormData<UserContactEdit>;
+// type FormData = MappedFormData<UserContactEdit>;
 type FormEdit = FormEditing<UserContactEdit>;
 @Component({
   selector: 'app-user-contact',
   standalone: true,
   template: `
-    <form [formGroup]="form" class="container">
-      <div
-        class="alert alert-error"
-        *ngIf="form.invalid && (form.touched || form.dirty)"
-      ></div>
-      @for(key of keys; track key ) {
-
+    <form class="container">
+    
+      @for(key of items(); track key.field ) {
+    
       <app-form-item
-        [item]="formEditing[key]"
+        [item]="key"
         [editingKey]="editingKey"
         (itemOperation)="onItemOperation($event)"
       ></app-form-item>
       }
     </form>
-    <pre>{{ userContact() | json }}</pre>
+
   `,
-  imports: [ReactiveFormsModule, JsonPipe, FormItemComponent, NgIf],
+  imports: [JsonPipe, FormItemComponent, NgIf],
 })
-export class UserContactComponent implements OnInit {
+export class UserContactComponent {
   private readonly store = inject(Store);
   userContact = this.store.selectSignal(userFeature.selectContactChannel);
-
-  formEditing: FormEdit;
-  keys: [keyof FormData];
-  editingKey: keyof FormData | undefined;
-  form: FormGroup<FormData> = new FormGroup<FormData>({
-    firstName: new FormControl<string>('', {
-      nonNullable: true,
-    }),
-    lastName: new FormControl<string>('', { nonNullable: true }),
-    emailAddress: new FormControl<string>('', {
-      nonNullable: true,
-    }),
-    phoneNumber: new FormControl<string>('', { nonNullable: true }),
-  });
-
-  constructor() {
-
-    this.formEditing = {
+  keys = computed<[keyof FormData]>(() =>
+    Object.keys(this.formEditing()) as [keyof FormData]
+  );
+  items = computed(() => Object.values(this.formEditing()));
+  formEditing = computed<FormEdit>(() => {
+    const defaults = {editing: false, dirty: false}
+    return {
       firstName: {
+        ...defaults,
+  
         field: 'firstName',
-        editing: false,
-        dirty: false,
-        displayValue: 'First Name',
+        displayValue: camelToTitleCase('firstName'),
         value: this.userContact()?.firstName ?? '',
       },
       lastName: {
+        ...defaults,
         field: 'lastName',
-        editing: false,
-        dirty: false,
-        displayValue: 'Last Name',
+        displayValue: camelToTitleCase('lastName'),
+        value: this.userContact()?.lastName ?? '',
       },
       emailAddress: {
+        ...defaults,
         field: 'emailAddress',
-        editing: false,
-        dirty: false,
-        displayValue: 'Email Address',
-        validators: [Validators.required],
+      
+        displayValue: camelToTitleCase('emailAddress'),
+        value: this.userContact()?.emailAddress ?? '',
       },
       phoneNumber: {
+        ...defaults,
         field: 'phoneNumber',
-        editing: false,
-        dirty: false,
-        displayValue: 'Phone Number',
+        displayValue: camelToTitleCase('phoneNumber'),
+        value: this.userContact()?.phoneNumber ?? '',
       },
     };
-    this.keys = Object.keys(this.formEditing) as [keyof FormData];
-  }
-  ngOnInit(): void {
-    this.updateForm();
-  }
-    private updateForm() {
-        this.form.controls.firstName.setValue(this.userContact()?.firstName ?? '');
-        this.form.controls.lastName.setValue(this.userContact()?.lastName ?? '');
-        this.form.controls.emailAddress.setValue(
-            this.userContact()?.emailAddress ?? ''
-        );
-        this.form.controls.phoneNumber.setValue(
-            this.userContact()?.phoneNumber ?? ''
-        );
-    }
+  });
 
-  get firstName() {
-    return this.form.controls.firstName;
-  }
+  editingKey: (keyof FormEdit) | undefined;
+
+
+  constructor() {}
 
   onItemOperation<T>(operation: EditingOperation<T>) {
     switch (operation.operation) {
@@ -121,11 +95,9 @@ export class UserContactComponent implements OnInit {
 
   editField<T>(item: FormEditingItem<T>) {
     item.editing = true;
-    const field = item.field as keyof FormData;
-    item.value = (
-      this.form.controls[field] as unknown as AbstractControl
-    ).value;
-    this.editingKey = item.field as keyof FormData;
+    const field = item.field as keyof FormEdit;
+ 
+    this.editingKey = field;
   }
   cancelField<T>(item: FormEditingItem<T>) {
     item.editing = false;
@@ -139,25 +111,34 @@ export class UserContactComponent implements OnInit {
     item.previousValue = item.value;
     item.value = newValue as T;
 
-    const field = item.field as keyof FormData;
+    const field = item.field as keyof FormEdit;
 
-    this.form.patchValue({
-      [field]: newValue,
-    });
-
-    this.form.updateValueAndValidity();
-    if (this.form.valid) {
-      this.store.dispatch(
-        UserContactCommands.updateItem({
-          payload: {
-            operation: field,
-            value: {
-              [field]: this.form.controls[field].value,
-            },
+    this.store.dispatch(
+      UserContactCommands.updateItem({
+        payload: {
+          operation: field,
+          value: {
+            [field]: item.value,
           },
-        })
-      );
-      this.editingKey = undefined;
-    }
+        },
+      })
+    );
+    this.editingKey = undefined;
   }
+}
+
+// function to convert from camelCase to Title Case
+function camelToTitleCase(str: string) {
+  return str
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (str) => str.toUpperCase());
+}
+
+function hogwash(field:keyof UserContactEdit, value:unknown):Partial<FormEditingItem<UserContactEdit>> {
+    let r  ={
+    field: field,
+    displayValue: camelToTitleCase('firstName'),
+    value: value as any
+  };
+  return r;
 }

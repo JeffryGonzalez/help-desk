@@ -6,11 +6,11 @@ import { RouterLink } from "@angular/router";
   standalone: true,
   template: ` <div class="navbar bg-base-100">
     <div class="flex-1">
-      <a class="btn btn-ghost text-xl" routerLink="/">Help Desk</a>
+      <a class="btn btn-ghost text-xl" [routerLink]="['/profile']">Help Desk</a>
     </div>
     <div class="flex-none">
       <ul class="menu menu-horizontal px-1">
-        <li><a>Link</a></li>
+        <li><a routerLink="/create-incident">Create Incident</a></li>
         <li>
           <details>
             <summary>Account</summary>
