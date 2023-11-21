@@ -23,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideState(authFeature),
     provideState(userFeature),
     provideState(pendingUserIncidentFeature),
-    isDevMode() ? provideStoreDevtools() : [],
+    isDevMode() ? provideStoreDevtools({trace: true}) : [],
     provideEffects([AuthEffects, UserEffects, PendingUserIncidentEffects])
   ],
 };
