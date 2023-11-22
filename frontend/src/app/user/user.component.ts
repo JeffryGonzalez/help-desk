@@ -26,7 +26,7 @@ import { PendingUserIncidentCommands } from './state/pending-incidents/actions';
             </ul>
           </nav>
         </div>
-        <div class="basis-3/4 flex">
+        <div class="flex">
           <router-outlet></router-outlet>
         </div>
       </div>

@@ -5,18 +5,27 @@ import { PendingUserIncidentCommands, PendingUserIncidentDocuments } from "./act
 import { EMPTY, map, tap } from "rxjs";
 import { Store } from "@ngrx/store";
 import { pendingUserIncidentFeature } from ".";
+import { userFeature } from "..";
 
 @Injectable()
 export class PendingUserIncidentEffects {
   createNewIncident = createEffect(() =>
     this.actions$.pipe(
       ofType(PendingUserIncidentCommands.createNewIncident),
-      map(() =>
+      concatLatestFrom(() => this.store.select(userFeature.selectContactChannel)),
+
+      map(([_, user]) =>
         PendingUserIncidentDocuments.newInicident({
           payload: {
             id: crypto.randomUUID(),
             description: undefined,
-            contact: undefined,
+            contact: {
+              contactChannel: user?.contactChannel,
+              firstName: user?.firstName || '',
+              lastName: user?.lastName || '',
+              emailAddress: user?.emailAddress || '',
+              phoneNumber: user?.phoneNumber || '',
+            },
           },
         })
       ),

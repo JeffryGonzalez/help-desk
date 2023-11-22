@@ -31,6 +31,12 @@ export const pendingUserIncidentFeature = createFeature({
   name: 'pendingUserIncidentFeature',
   reducer: createReducer(
     initialState,
+    on(PendingUserIncidentCommands.updateIncidentContactInfo, (state, { payload }) => {
+      const contactInfo = state.entities[payload.id]?.contact;
+      const updatedContactInfo = {...contactInfo, ...payload.changes};
+      const updatedIncident = {...state.entities[payload.id], contact: updatedContactInfo} as PendingUserIncident;
+      return adapter.upsertOne( updatedIncident, state);
+    }),
     on(PendingUserIncidentCommands.updateIncident, (state, { payload }) =>
       adapter.updateOne(payload, state)
     ),

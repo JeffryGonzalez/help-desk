@@ -9,7 +9,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { FormEditing, FormEditingItem, MappedFormData } from '../utils';
+import { FormEditing, FormEditingItem, MappedFormData, camelToTitleCase } from '../utils';
 import { EditingOperation, FormItemComponent } from './form-item.component';
 import { UserContact, userFeature } from './state';
 import { UserContactCommands, UserContactEdit } from './state/actions';
@@ -128,11 +128,7 @@ export class UserContactComponent {
 }
 
 // function to convert from camelCase to Title Case
-function camelToTitleCase(str: string) {
-  return str
-    .replace(/([A-Z])/g, ' $1')
-    .replace(/^./, (str) => str.toUpperCase());
-}
+
 
 function hogwash(field:keyof UserContactEdit, value:unknown):Partial<FormEditingItem<UserContactEdit>> {
     let r  ={

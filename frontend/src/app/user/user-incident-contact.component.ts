@@ -1,4 +1,4 @@
-import { Component, Input, computed, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { pendingUserIncidentFeature } from './state/pending-incidents';
@@ -19,7 +19,7 @@ import { PendingUserIncidentCommands } from './state/pending-incidents/actions';
           type="text"
           id="firstName"
           #firstName
-          [ngModel]="contactInfoFromUser()?.firstName"
+          [ngModel]="savedIncident()?.contact?.firstName"
           (change)="updateField('firstName', firstName.value)"
           name="firstName"
           class="input input-bordered"
@@ -32,7 +32,7 @@ import { PendingUserIncidentCommands } from './state/pending-incidents/actions';
           type="text"
           #lastName
           id="lastName"
-          [ngModel]="contactInfoFromUser()?.lastName"
+          [ngModel]="savedIncident()?.contact?.lastName"
           (change)="updateField('lastName', lastName.value)"
           name="lastName"
           class="input input-bordered"
@@ -46,7 +46,7 @@ import { PendingUserIncidentCommands } from './state/pending-incidents/actions';
           #email
           id="emailAddress"
           name="emailAddress"
-          [ngModel]="contactInfoFromUser()?.emailAddress"
+          [ngModel]="savedIncident()?.contact?.emailAddress"
           (change)="updateField('emailAddress', email.value)"
           class="input input-bordered"
           placeholder="Email Address"
@@ -58,49 +58,47 @@ import { PendingUserIncidentCommands } from './state/pending-incidents/actions';
           type="text"
           id="phoneNumber"
           #phone
-          [ngModel]="contactInfoFromUser()?.phoneNumber"
+          [ngModel]="savedIncident()?.contact?.phoneNumber"
           (change)="updateField('firstName', phone.value)"
           name="phoneNumber"
           class="input input-bordered"
           placeholder="First Name"
         />
       </div>
-        <a class="btn btn-info w-1/3" (click)="goNext()">Next</a>
+      <a class="btn btn-info w-1/3" (click)="goNext()">Next</a>
     </form>
     <pre>{{ changed() }} </pre>
   `,
   imports: [FormsModule],
 })
-export class UserInicidentContactComponent {
+export class UserInicidentContactComponent implements OnInit {
   private readonly store = inject(Store);
   savedIncident = this.store.selectSignal(
     pendingUserIncidentFeature.selectCurrentIssue
   );
-  contactInfoFromUser = this.store.selectSignal(
-    userFeature.selectContactChannel
-  );
 
   changed = signal(false);
   updatedContactInfo: Partial<Omit<UserContact, 'id'>> = {};
+  ngOnInit(): void {}
   goNext() {
     this.store.dispatch(
-      PendingUserIncidentCommands.goToStep({ payload: { step: 'review', id: this.savedIncident()?.id || '' } })
+      PendingUserIncidentCommands.goToStep({
+        payload: { step: 'review', id: this.savedIncident()?.id || '' },
+      })
     );
   }
   updateField(field: keyof Omit<UserContact, 'id'>, value: any) {
-    if (this.contactInfoFromUser()?.[field] !== value) {
-      this.updatedContactInfo[field] = value;
-      this.changed.set(true);
-      this.store.dispatch(
-        PendingUserIncidentCommands.updateIncidentContactInfo({
-          payload: {
-            id: this.savedIncident()?.id || '',
-            changes: {
-              [field]: value,
-            },
+    this.updatedContactInfo[field] = value;
+    this.changed.set(true);
+    this.store.dispatch(
+      PendingUserIncidentCommands.updateIncidentContactInfo({
+        payload: {
+          id: this.savedIncident()?.id || '',
+          changes: {
+            [field]: value,
           },
-        })
-      );
-    }
+        },
+      })
+    );
   }
 }
