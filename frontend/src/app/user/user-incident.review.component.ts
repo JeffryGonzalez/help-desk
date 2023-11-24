@@ -169,22 +169,25 @@ export class UserIssueReviewComponent implements OnInit {
         return [];
     }
 
-    function validatesRequired(value: any): string | undefined {
+    function validatesRequired(value: unknown): string | undefined {
       if (typeof value === 'string') {
         return value.trim() !== '' ? undefined : 'Required';
       }
       return value !== undefined && value !== null ? undefined : 'Required';
     }
 
-    function validatesEmailAddress(value: string): string | undefined {
+    function validatesEmailAddress(value: unknown): string | undefined {
+      if(typeof value === "string") {
       return value.includes('@') ? undefined : 'Must be a valid email address';
+      }
+      return "Email address must be a string"
     }
   }
 
   private doValidationFor(
     key: keyof UserContact,
     fieldName: string,
-    validators: ((value: any) => string | undefined)[]
+    validators: ((value: unknown) => string | undefined)[]
   ) {
     let messages: string[] = [];
     for (const validator of validators) {

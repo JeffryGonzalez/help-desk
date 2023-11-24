@@ -1,4 +1,5 @@
-﻿using Marten;
+﻿using HelpDesk.api.User.ReadModels;
+using Marten;
 
 namespace HelpDesk.api.User;
 
@@ -26,6 +27,11 @@ public static class ContactHandler
     {
 
         session.Events.Append(command.Id, new EmailAddressUpdated(command.Value));
+        await session.SaveChangesAsync();
+    }
+    public static async Task HandleAsync(ModifyContactMechanism command, IDocumentSession session)
+    {
+        session.Events.Append(command.Id, new ContactMechanismUpdated(Enum.Parse<ContactChannelType>(command.Value)));
         await session.SaveChangesAsync();
     }
 }

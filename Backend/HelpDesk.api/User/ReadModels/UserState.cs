@@ -8,7 +8,7 @@ public record UserState
     public Guid Id { get; set; }
     public int Version { get; set; }
 
-    public Contact ContactChannel { get; set; } = new Contact(ContactChannelType.GeneratedBySystem);
+    public Contact Contact { get; set; } = new Contact(ContactChannelType.GeneratedBySystem);
 }
 
 public class UserStateProjection : SingleStreamProjection<UserState>
@@ -26,12 +26,13 @@ public class UserStateProjection : SingleStreamProjection<UserState>
 
         return @event switch
         {
-            FirstNameUpdated e => current with { ContactChannel = current.ContactChannel with { FirstName = e.Value } },
-            LastNameUpdated e => current with { ContactChannel = current.ContactChannel with { LastName = e.Value } },
-            PhoneNumberUpdated e => current with { ContactChannel = current.ContactChannel with { PhoneNumber = e.Value } },
-            EmailAddressUpdated e => current with { ContactChannel = current.ContactChannel with { EmailAddress = e.Value } },
+            FirstNameUpdated e => current with { Contact = current.Contact with { FirstName = e.Value } },
+            LastNameUpdated e => current with { Contact = current.Contact with { LastName = e.Value } },
+            PhoneNumberUpdated e => current with { Contact = current.Contact with { PhoneNumber = e.Value } },
+            EmailAddressUpdated e => current with { Contact = current.Contact with { EmailAddress = e.Value } },
+            ContactMechanismUpdated e => current with { Contact = current.Contact with { ContactChannel = e.Value } },
             _ => throw new Exception("Chaos")
-        };
+        } ;
      
     }
 }
@@ -44,8 +45,8 @@ public enum ContactChannelType
 }
 public record Contact(
     ContactChannelType ContactChannel,
-    string? FirstName = null,
-    string? LastName = null,
-    string? EmailAddress = null,
-    string? PhoneNumber = null
+    string FirstName = "",
+    string LastName = "",
+    string EmailAddress = "",
+    string PhoneNumber = ""
 );

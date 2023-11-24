@@ -1,5 +1,6 @@
 ﻿using HelpDesk.api.User.ReadModels;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Security.Cryptography.Xml;
 using Wolverine;
 using Wolverine.Http.Marten;
 using Get = Wolverine.Http.WolverineGetAttribute;
@@ -24,8 +25,9 @@ public static class Api
             "last-name" => new ModifyContactLastName(id, request.Value),
             "email-address" => new ModifyContactEmailAddress(id, request.Value),
             "phone-number" => new ModifyContactPhoneNumber(id, request.Value),
+            "contact-channel" => new ModifyContactMechanism(id, request.Value),
             _ => throw new BadHttpRequestException("invalid path")
-        };
+        }; ;
        
        
         await bus.PublishAsync(cmd);
