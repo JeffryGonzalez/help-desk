@@ -1,6 +1,6 @@
 import { Component, Signal, inject, signal } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
-import { ContactChannels, UserContactKey, UserStore } from '../../profile';
+import { ContactChannels, UserContactKey, UserStore } from '.';
 
 @Component({
   selector: 'app-profile',
