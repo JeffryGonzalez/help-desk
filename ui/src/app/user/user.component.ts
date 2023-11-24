@@ -11,13 +11,15 @@ import { AuthStore } from '../auth/auth.store';
   template: `
     <section class="relative">
       <div class="flex flex-row">
-        <div class="basis-1/4 flex">
+        <div class="basis-1/6 flex">
           <nav>
             <ul>
               <li>
-                @if(store.contactIsValid()) { } @else {
+                @if(store.contactInvalid()) {
                 <div class="indicator">
-                  <span class="indicator-item badge badge-success">Start Here</span>
+                  <span class="indicator-item badge badge-success"
+                    >Start Here</span
+                  >
                   <div class="grid place-items-center">
                     <a
                       routerLink="profile"
@@ -26,11 +28,20 @@ import { AuthStore } from '../auth/auth.store';
                     >
                   </div>
                 </div>
+                } @else {
+                <a
+                  routerLink="profile"
+                  class="btn btn-nav btm-nav-sm w-full mb-2"
+                  >Your Profile</a
+                >
                 }
               </li>
               <li>
                 <a
-                  [ngClass]="{ 'pointer-events-none': store.contactInvalid(), 'brightness-50': store.contactInvalid()}"
+                  [ngClass]="{
+                    'pointer-events-none': store.contactInvalid(),
+                    'brightness-50': store.contactInvalid()
+                  }"
                   routerLink="resolved"
                   class="btn btn-nav btm-nav-sm w-full mb-2"
                 >
@@ -40,7 +51,7 @@ import { AuthStore } from '../auth/auth.store';
             </ul>
           </nav>
         </div>
-        <div class="flex">
+        <div class="flex basis-auto w-full">
           <router-outlet></router-outlet>
         </div>
       </div>
@@ -51,11 +62,11 @@ import { AuthStore } from '../auth/auth.store';
 export class UserComponent {
   store = inject(UserStore);
   authStore = inject(AuthStore);
- constructor() {
-  const streamId = this.authStore?.streamId;
-  if(streamId) {
-    console.log(streamId());
-    this.store.loadUser(streamId()!);
+  constructor() {
+    const streamId = this.authStore?.streamId;
+    if (streamId) {
+      console.log(streamId());
+      this.store.loadUser(streamId()!);
+    }
   }
- }
 }

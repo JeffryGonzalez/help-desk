@@ -1,16 +1,30 @@
-import { HttpClient } from "@angular/common/http";
-import { computed, inject } from "@angular/core";
-import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
-import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { distinctUntilChanged, filter, mergeMap, pipe, skip, switchMap, tap } from "rxjs";
-import { AuthStore } from "../../auth/auth.store";
+import { HttpClient } from '@angular/common/http';
+import { computed, inject } from '@angular/core';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withHooks,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import {
+  distinctUntilChanged,
+  filter,
+  mergeMap,
+  pipe,
+  skip,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { AuthStore } from '../../auth/auth.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ProfileService } from "./profie.service";
+import { ProfileService } from './profie.service';
 
-type Thingy = {
+type ChangeRequest = {
   id: string | undefined;
   pendingChange: PendingChangeType | undefined;
-  
 };
 export const contactChannels = [
   'Email',
@@ -20,22 +34,22 @@ export const contactChannels = [
 ] as const;
 export type ContactChannels = (typeof contactChannels)[number];
 export type UserContact = {
-  contactChannel: ContactChannels ;
-  firstName: string ;
-  lastName: string ;
-  emailAddress: string ;
-  phoneNumber: string ;
+  contactChannel: ContactChannels;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  phoneNumber: string;
 };
 export type UserContactKey = keyof UserContact;
-export type PendingChangeType = { prop: UserContactKey, value: unknown};
+export type PendingChangeType = { prop: UserContactKey; value: unknown };
 export type UserState = {
   id: string | undefined;
 
   version: number | undefined;
-  contact: UserContact ;
+  contact: UserContact;
   loading: boolean;
   isSavingContactKey: UserContactKey | undefined;
-  pendingChange:  PendingChangeType | undefined;
+  pendingChange: PendingChangeType | undefined;
 };
 const initialState: UserState = {
   id: undefined,
@@ -59,17 +73,17 @@ export const UserStore = signalStore(
       client = inject(ProfileService)
     ) => ({
       setUserState(key: UserContactKey, value: unknown) {
+        if (contact()[key] === value) return;
         patchState(state, {
-          contact: { ...contact(), [key]: value },
           isSavingContactKey: key,
           pendingChange: { prop: key, value },
         });
       },
-      async loadUser(id:string) {
+      async loadUser(id: string) {
         const user = await client.loadUser(id);
         patchState(state, { ...user, loading: false });
       },
-      saveUserProp: rxMethod<Thingy>(
+      saveUserProp: rxMethod<ChangeRequest>(
         pipe(
           distinctUntilChanged(),
           takeUntilDestroyed(),
@@ -84,9 +98,11 @@ export const UserStore = signalStore(
           mergeMap((s) =>
             client.updateUserContactInfo(s.id!, s.pendingChange!).pipe(
               tap(() => {
+                const key = s.pendingChange?.prop;
                 patchState(state, {
                   isSavingContactKey: undefined,
                   pendingChange: undefined,
+                  contact: { ...contact(), [key!]: s.pendingChange?.value },
                 });
               })
             )
@@ -113,43 +129,47 @@ export const UserStore = signalStore(
       ),
       streamId: computed(() => (auth?.streamId ? auth?.streamId() : undefined)),
       state: computed(
-        () => ({ id: state.id(), pendingChange: pendingChange() } as Thingy)
+        () =>
+          ({ id: state.id(), pendingChange: pendingChange() } as ChangeRequest)
       ),
     })
   ),
   withHooks({
     async onInit({ saveUserProp, state }) {
-      
       saveUserProp(state);
     },
   })
 );
 
-function emailValid(contact:UserContact): boolean {
-    if (contact.contactChannel === 'Email') {
-      return contact.emailAddress.length > 0;
-    }
-    return true;
-}
-function phoneValid(contact:UserContact): boolean {
-    if (contact.contactChannel === 'Phone') {
-      return contact.phoneNumber.length > 0;
-    }
-    return true;
-
+function emailValid(contact: UserContact): boolean {
+  if (contact.contactChannel === 'Email') {
+    return contact.emailAddress.length > 0;
   }
+  return true;
+}
+function phoneValid(contact: UserContact): boolean {
+  if (contact.contactChannel === 'Phone') {
+    return contact.phoneNumber.length > 0;
+  }
+  return true;
+}
 
 function firstNameValid(contact: UserContact) {
-  return  contact.firstName.length > 0;
+  return contact.firstName.length > 0;
 }
 
 function lastNameValid(contact: UserContact) {
   return contact.lastName.length > 0;
 }
-function contactChannelIsValid(contact:UserContact) {
+function contactChannelIsValid(contact: UserContact) {
   return contact.contactChannel !== 'GeneratedBySystem';
 }
 function contactIsValid(contact: UserContact) {
-  return firstNameValid(contact) && lastNameValid(contact) && contactChannelIsValid(contact) && emailValid(contact) && phoneValid(contact);
+  return (
+    firstNameValid(contact) &&
+    lastNameValid(contact) &&
+    contactChannelIsValid(contact) &&
+    emailValid(contact) &&
+    phoneValid(contact)
+  );
 }
-
