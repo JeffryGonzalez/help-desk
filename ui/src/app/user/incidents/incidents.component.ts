@@ -6,9 +6,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <p>
-      incidents works!
-    </p>
+   <div class="prose">
+    <h1>Your Incidents</h1>
+   </div>
   `,
   styles: ``
 })

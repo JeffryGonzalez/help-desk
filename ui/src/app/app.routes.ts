@@ -1,11 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Routes } from '@angular/router';
-import { AuthStore } from './auth/auth.store';
+import { Store } from '@ngrx/store';
+import { AuthFeature } from './auth/state';
 import { HomeComponent } from './home.component';
-import { UserComponent } from './user/user.component';
-import { ProfileComponent } from './user/profile/profile.component';
-import { UserStore } from './user/profile';
 import { IncidentsComponent } from './user/incidents/incidents.component';
+import { UserStore } from './user/profile';
+import { ProfileComponent } from './user/profile/profile.component';
+import { UserComponent } from './user/user.component';
 
 export const routes: Routes = [
   {
@@ -15,7 +16,7 @@ export const routes: Routes = [
   {
     path: 'user',
     component: UserComponent,
-    canActivate: [loggedInGuard],
+    canActivate: [loggedInGuard()],
     providers: [UserStore],
     children: [
       {
@@ -32,7 +33,7 @@ export const routes: Routes = [
 
 function loggedInGuard(): CanActivateFn {
   return () => {
-    const store = inject(AuthStore);
-    return store.isAuthenticated();
+    const store = inject(Store);
+    return store.select(AuthFeature.selectIsAuthenticated);
   };
 }

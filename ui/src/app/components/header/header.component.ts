@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
     </div>
     <div class="flex-none">
       <ul class="menu menu-horizontal px-1">
-        <li><a routerLink="/create-incident">Create Incident</a></li>
+        <li><a routerLink="/user">Your User</a></li>
         <li>
           <details>
             <summary>Account</summary>

@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./components";
 import { AuthComponent } from "./auth";
+import { Store } from '@ngrx/store';
+import { AuthActions, AuthFeature } from './auth/state';
 
 @Component({
     selector: 'app-root',
@@ -20,5 +22,9 @@ import { AuthComponent } from "./auth";
 })
 export class AppComponent {
   title = 'ui';
+  store = inject(Store);
+  constructor() {
+    this.store.dispatch(AuthActions.checkAuth());
+  }
  
 }

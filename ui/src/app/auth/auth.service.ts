@@ -1,8 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { map } from "rxjs";
 import { getApiUrl } from ".";
-import { catchError, map, of } from "rxjs";
-import { AuthState } from "./auth.store";
+
+import { AuthState } from "./state";
 export type UserClaim = { type: string; value: string };
 @Injectable({ providedIn: 'root'})
 export class AuthService {
@@ -17,16 +18,10 @@ export class AuthService {
                  )?.value;
                  const payload:AuthState = {
                     isAuthenticated: true,
-                    sub,
                     streamId,
                  };
+                
                  return payload;
-            }),
-            catchError(() => {
-                const payload: AuthState = {
-                    isAuthenticated: false,
-                };
-                return of(payload);
             })
         )
     }

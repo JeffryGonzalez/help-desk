@@ -18,9 +18,10 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { AuthStore } from '../../auth/auth.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProfileService } from './profie.service';
+import { Store } from '@ngrx/store';
+import { AuthFeature } from '../../auth/state';
 
 type ChangeRequest = {
   id: string | undefined;
@@ -79,10 +80,24 @@ export const UserStore = signalStore(
           pendingChange: { prop: key, value },
         });
       },
-      async loadUser(id: string) {
-        const user = await client.loadUser(id);
-        patchState(state, { ...user, loading: false });
-      },
+      loadUser: rxMethod<string | undefined>(
+        pipe(
+          distinctUntilChanged(),
+          takeUntilDestroyed(),
+          switchMap(() => client.loadUser()
+            .pipe(
+              tap((u) => {
+                patchState(state, {
+                  id: u.id,
+                  version: u.version,
+                  contact: u.contact,
+                  loading: false,
+                });
+              })
+            )
+          ),
+        )
+      ),
       saveUserProp: rxMethod<ChangeRequest>(
         pipe(
           distinctUntilChanged(),
@@ -113,8 +128,7 @@ export const UserStore = signalStore(
   ),
   withComputed(
     (
-      { contact, isSavingContactKey, pendingChange, ...state },
-      auth = inject(AuthStore)
+      { contact, isSavingContactKey, pendingChange, ...state }, store = inject(Store)
     ) => ({
       firstNameIsValid: computed(() => firstNameValid(contact())),
       lastNameIsValid: computed(() => lastNameValid(contact())),
@@ -127,7 +141,7 @@ export const UserStore = signalStore(
         () =>
           isSavingContactKey() !== undefined && pendingChange() !== undefined
       ),
-      streamId: computed(() => (auth?.streamId ? auth?.streamId() : undefined)),
+      streamId: computed(() => store.selectSignal(AuthFeature.selectStreamId)()),
       state: computed(
         () =>
           ({ id: state.id(), pendingChange: pendingChange() } as ChangeRequest)
@@ -135,8 +149,10 @@ export const UserStore = signalStore(
     })
   ),
   withHooks({
-    async onInit({ saveUserProp, state }) {
+    async onInit({ saveUserProp, loadUser, streamId, state }) {
       saveUserProp(state);
+      console.log('loading user', streamId());
+      loadUser(streamId());
     },
   })
 );

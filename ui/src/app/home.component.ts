@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthStore } from './auth/auth.store';
+import { Component, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AuthFeature } from './auth/state';
 
 @Component({
   selector: 'app-home',
@@ -9,10 +10,10 @@ import { AuthStore } from './auth/auth.store';
   template: `
     <div class="prose prose-sm">
   <h1>Help Desk</h1>
-  @if(store.isAuthenticated() === false) {
+  @if(isAuthenticated() === false) {
     <div class="alert ">
       <h2>You Must Be Signed In to Use This Application</h2>
-      <button class="btn btn-primary" (click)="store.logIn()">Sign In</button>
+      <a href="/api/login" class="btn btn-primary" >Sign In</a>
   </div>
   }
 </div>
@@ -20,5 +21,6 @@ import { AuthStore } from './auth/auth.store';
   styles: ``
 })
 export class HomeComponent {
-  store = inject(AuthStore);
+  store = inject(Store);
+  isAuthenticated = this.store.selectSignal(AuthFeature.selectIsAuthenticated);
 }
