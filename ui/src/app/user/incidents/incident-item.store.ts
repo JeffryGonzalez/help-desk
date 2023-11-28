@@ -6,6 +6,7 @@ import { computed } from "@angular/core";
 const initialState: UserIncident = {
     id: '',
     description: '',
+    created: ''
 }
 
 export const UserIncidentItemStore = signalStore(

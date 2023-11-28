@@ -6,7 +6,8 @@ import { UserDocuments } from "../../state/actions";
 
 export type UserIncident = {
     id: string;
-    description: string | undefined;
+    description: string;
+    created: string;
 }
 interface UserIncidentState extends EntityState<UserIncident> {};
 const adapter = createEntityAdapter<UserIncident>();
@@ -16,8 +17,9 @@ export const UserIncidentFeature = createFeature({
     reducer: createReducer(initialState, 
         on(UserDocuments.user, (state, { payload }) => adapter.setAll(payload.userIncidents, state)),
         on(UserIncidentDocuments.created, (state, { payload }) => adapter.upsertOne(payload, state))),
-        extraSelectors: ({ selectUserIncidentFeatureState }) => ({
-            all: createSelector(selectUserIncidentFeatureState, (s) => adapter.getSelectors().selectAll(s)),
-            getById: (id: string) => createSelector(selectUserIncidentFeatureState, state => state.entities[id])
+        extraSelectors: ({ selectEntities, selectIds }) => ({
+            all:createSelector(selectIds, selectEntities, (ids, entities) => ids.map(id => entities[id])),
+            
+            getById: (id: string) => createSelector(selectEntities, state => state[id])
         })
 })
