@@ -2,25 +2,25 @@ import { createActionGroup, createFeature, createReducer, emptyProps, on, props 
 
 export type AuthState = {
     isAuthenticated: boolean;
-    streamId: string | undefined;
+   
 }
 const initialState: AuthState = {
   isAuthenticated: false,
-  streamId: undefined,
 };
 
+export type StreamId = string;
 export const AuthActions = createActionGroup({
     source: 'Auth',
     events: {
         'Check Auth': emptyProps(),
-        'Logged In': props<{payload: AuthState}>(),
+        'Logged In': props<{payload: StreamId}>(),
         'Logged Out': emptyProps()
     }
 })
 export const AuthFeature = createFeature({
     name: 'AuthFeature',
     reducer: createReducer(initialState,
-        on(AuthActions.loggedIn, (state, {payload}) => ({...state, ...payload})),
+        on(AuthActions.loggedIn, (state, {payload}) => ({...state, streamId: payload, isAuthenticated: true})),
         on(AuthActions.loggedOut, () => initialState)
     )
 })

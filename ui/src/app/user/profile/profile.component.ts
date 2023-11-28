@@ -1,6 +1,9 @@
-import { Component, Signal, inject, signal } from '@angular/core';
+import { Component, OnInit, Signal, inject, signal } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
-import { ContactChannels, UserContactKey, UserStore } from '.';
+import {  UserStore } from '.';
+import { ContactChannels, UserContactFeature, UserContactKey } from './state';
+import { Store } from '@ngrx/store';
+import { UserFeature } from '../state';
 
 @Component({
   selector: 'app-profile',
@@ -47,6 +50,7 @@ import { ContactChannels, UserContactKey, UserStore } from '.';
           <label class="label" for="contactChannel"
             >How do you like to be contacted:</label
           >
+
           <select
             #cm
             [disabled]="store.isSavingContact()"
@@ -59,7 +63,7 @@ import { ContactChannels, UserContactKey, UserStore } from '.';
               'select-error': store.contactChannelIsValid() === false
             }"
           >
-            <option disabled selected>Preferred Contact Mechanism</option>
+            <option disabled selected value="GeneratedBySystem">Preferred Contact Mechanism</option>
             @for(c of contactChannels(); track c) {
             <option [value]="c">
               {{ c }}
@@ -97,11 +101,13 @@ import { ContactChannels, UserContactKey, UserStore } from '.';
         </div>
       </form>
     </div>
+    <pre>Change: {{ store.pendingChange() | json }}</pre>
   `,
   styles: ``,
 })
-export class ProfileComponent {
+export class ProfileComponent  {
   store = inject(UserStore);
+
 
   contactChannels: Signal<ContactChannels[]> = signal([
     'Email',

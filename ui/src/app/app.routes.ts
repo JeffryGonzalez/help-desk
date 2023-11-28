@@ -7,6 +7,9 @@ import { IncidentsComponent } from './user/incidents/incidents.component';
 import { UserStore } from './user/profile';
 import { ProfileComponent } from './user/profile/profile.component';
 import { UserComponent } from './user/user.component';
+import { IncidentItemComponent } from './user/incidents/incident-item.component';
+import {  UserIncidentsStore } from './user/incidents/user-incident.store';
+import { IncidentsListComponent } from './user/incidents/incidents-list.component';
 
 export const routes: Routes = [
   {
@@ -26,6 +29,17 @@ export const routes: Routes = [
       {
         path: 'incidents',
         component: IncidentsComponent,
+        providers: [UserIncidentsStore],
+        children: [
+          {
+            path: '',
+            component: IncidentsListComponent
+          },
+          {
+            path: ":id",
+            component: IncidentItemComponent
+          }
+        ]
       },
     ],
   },

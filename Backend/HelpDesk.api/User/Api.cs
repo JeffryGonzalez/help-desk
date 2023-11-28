@@ -1,10 +1,12 @@
 ﻿using HelpDesk.api.User.ReadModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Security.Cryptography.Xml;
 using Wolverine;
 using Wolverine.Http.Marten;
 using Get = Wolverine.Http.WolverineGetAttribute;
 using Put = Wolverine.Http.WolverinePutAttribute;
+using Post = Wolverine.Http.WolverinePostAttribute;
 namespace HelpDesk.api.User;
 
 public static class Api
@@ -14,6 +16,14 @@ public static class Api
     public static IResult Get([Document] UserState response)
     {
         return TypedResults.Ok(response);
+    }
+
+    [Post("/api/users/{id:guid}/incidents")]
+    public static async Task<IResult> CreateIncident(Guid id, IMessageBus bus)
+    {
+        var command = new CreateUserIncident(id);
+        await bus.InvokeAsync(command);
+        return Results.Ok(command);
     }
 
     [Put("/api/users/{id:guid}/{op:required}")]

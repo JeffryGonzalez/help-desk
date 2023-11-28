@@ -1,22 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
-import { PendingChangeType, UserState } from './user.store';
-import { lastValueFrom, of } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 import { AuthFeature } from '../../auth/state';
+import { PendingChangeType, UserState } from './user.store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileService {
   store = inject(Store);
-  id = this.store.selectSignal(AuthFeature.selectStreamId);
+  //id = this.store.selectSignal(AuthFeature.selectStreamId);
   constructor(private readonly client: HttpClient) {}
 
   loadUser() {
     
-    return this.client.get<UserState>('/api/users/' + this.id());
+    return this.client.get<UserState>('/api/users/' + '');
   }
 
   updateUserContactInfo(id: string, change: PendingChangeType) {

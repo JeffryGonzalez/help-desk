@@ -1,4 +1,5 @@
 ﻿using HelpDesk.api.Auth;
+using Marten.Events;
 using Marten.Events.Aggregation;
 
 namespace HelpDesk.api.User.ReadModels;
@@ -9,6 +10,7 @@ public record UserState
     public int Version { get; set; }
 
     public Contact Contact { get; set; } = new Contact(ContactChannelType.GeneratedBySystem);
+    public List<UserIncident> UserIncidents { get; set; } = [];
 }
 
 public class UserStateProjection : SingleStreamProjection<UserState>
@@ -35,6 +37,11 @@ public class UserStateProjection : SingleStreamProjection<UserState>
         } ;
      
     }
+    public UserState Apply(IEvent<UserIncidentCreated> @event, UserState current)
+    {
+        var newIncident = new UserIncident(@event.Data.Id, @event.Timestamp);
+        return current with { UserIncidents = [newIncident, .. current.UserIncidents] };
+    }
 }
 public enum ContactChannelType
 {
@@ -50,3 +57,9 @@ public record Contact(
     string EmailAddress = "",
     string PhoneNumber = ""
 );
+
+public record UserIncident(
+    Guid Id,
+    DateTimeOffset Created,
+    string Description = ""
+    );

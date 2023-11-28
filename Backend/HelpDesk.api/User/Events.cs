@@ -9,3 +9,6 @@ public record EmailAddressUpdated(string Value) : UserContactEvent;
 public record PhoneNumberUpdated(string Value) : UserContactEvent;
 
 public record ContactMechanismUpdated(ContactChannelType Value): UserContactEvent;
+
+
+public record UserIncidentCreated(Guid Id);

@@ -16,12 +16,9 @@ export class AuthService {
                  const streamId = claims.find(
                    (x) => x.type === 'stream_id'
                  )?.value;
-                 const payload:AuthState = {
-                    isAuthenticated: true,
-                    streamId,
-                 };
+                 
                 
-                 return payload;
+                 return streamId!;
             })
         )
     }

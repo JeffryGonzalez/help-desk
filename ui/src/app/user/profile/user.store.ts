@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { computed, inject } from '@angular/core';
+import { Signal, computed, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   patchState,
   signalStore,
@@ -9,46 +9,34 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { Store } from '@ngrx/store';
 import {
   distinctUntilChanged,
   filter,
   mergeMap,
   pipe,
-  skip,
   switchMap,
-  tap,
+  tap
 } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ProfileService } from './profie.service';
-import { Store } from '@ngrx/store';
 import { AuthFeature } from '../../auth/state';
+import { ProfileService } from './profie.service';
+import { UserContactKey, UserContact } from './state';
+import { UserContactCommands } from './state/actions';
 
 type ChangeRequest = {
   id: string | undefined;
   pendingChange: PendingChangeType | undefined;
 };
-export const contactChannels = [
-  'Email',
-  'Phone',
-  'InPerson',
-  'GeneratedBySystem',
-] as const;
-export type ContactChannels = (typeof contactChannels)[number];
-export type UserContact = {
-  contactChannel: ContactChannels;
-  firstName: string;
-  lastName: string;
-  emailAddress: string;
-  phoneNumber: string;
-};
-export type UserContactKey = keyof UserContact;
+
+
+
 export type PendingChangeType = { prop: UserContactKey; value: unknown };
 export type UserState = {
   id: string | undefined;
 
   version: number | undefined;
   contact: UserContact;
-  loading: boolean;
+
   isSavingContactKey: UserContactKey | undefined;
   pendingChange: PendingChangeType | undefined;
 };
@@ -62,7 +50,7 @@ const initialState: UserState = {
     emailAddress: '',
     phoneNumber: '',
   },
-  loading: true,
+
   isSavingContactKey: undefined,
   pendingChange: undefined,
 };
@@ -71,8 +59,15 @@ export const UserStore = signalStore(
   withMethods(
     (
       { contact, pendingChange, ...state },
-      client = inject(ProfileService)
+      store = inject(Store),
     ) => ({
+      setUser(user:UserContact) {
+        console.log("setting user", user)
+        patchState(state, {
+          contact: user,
+
+        });
+      },
       setUserState(key: UserContactKey, value: unknown) {
         if (contact()[key] === value) return;
         patchState(state, {
@@ -80,48 +75,20 @@ export const UserStore = signalStore(
           pendingChange: { prop: key, value },
         });
       },
-      loadUser: rxMethod<string | undefined>(
+
+      saveUserProp: rxMethod<PendingChangeType>(
         pipe(
-          distinctUntilChanged(),
-          takeUntilDestroyed(),
-          switchMap(() => client.loadUser()
-            .pipe(
-              tap((u) => {
-                patchState(state, {
-                  id: u.id,
-                  version: u.version,
-                  contact: u.contact,
-                  loading: false,
-                });
-              })
-            )
-          ),
-        )
-      ),
-      saveUserProp: rxMethod<ChangeRequest>(
-        pipe(
+          tap(r => console.log("changing", r)),
           distinctUntilChanged(),
           takeUntilDestroyed(),
 
           filter((a) => {
-            console.log('filtering user prop', a);
-            return a.pendingChange !== undefined;
+          
+            return a.prop !== undefined;
           }),
-          tap((a) => {
-            console.log('saving user prop', a);
-          }),
-          mergeMap((s) =>
-            client.updateUserContactInfo(s.id!, s.pendingChange!).pipe(
-              tap(() => {
-                const key = s.pendingChange?.prop;
-                patchState(state, {
-                  isSavingContactKey: undefined,
-                  pendingChange: undefined,
-                  contact: { ...contact(), [key!]: s.pendingChange?.value },
-                });
-              })
-            )
-          )
+     
+          tap((a) => store.dispatch(UserContactCommands.updateProperty({payload: a}))),
+          tap((a) => patchState(state, { isSavingContactKey: undefined, pendingChange: undefined, contact: { ...contact(), [a.prop]: a.value}  } ))
         )
       ),
     })
@@ -141,18 +108,17 @@ export const UserStore = signalStore(
         () =>
           isSavingContactKey() !== undefined && pendingChange() !== undefined
       ),
-      streamId: computed(() => store.selectSignal(AuthFeature.selectStreamId)()),
-      state: computed(
+      streamId: computed(() => ''),
+      changeRequest: computed(
         () =>
-          ({ id: state.id(), pendingChange: pendingChange() } as ChangeRequest)
+          ({ prop: pendingChange()?.prop, value: pendingChange()?.value } as PendingChangeType)
       ),
     })
   ),
   withHooks({
-    async onInit({ saveUserProp, loadUser, streamId, state }) {
-      saveUserProp(state);
-      console.log('loading user', streamId());
-      loadUser(streamId());
+    async onInit({ saveUserProp,  changeRequest, pendingChange }) {
+      console.log("Initializing User Store");
+      saveUserProp(changeRequest);
     },
   })
 );
