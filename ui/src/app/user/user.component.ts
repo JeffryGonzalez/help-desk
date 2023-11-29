@@ -59,8 +59,7 @@ import { tap } from 'rxjs';
         <div class="flex basis-auto w-full">
           <router-outlet></router-outlet>
          
-          <pre>{{ store.contact() | json }}</pre>
-
+       
         </div>
       </div>
     </section>

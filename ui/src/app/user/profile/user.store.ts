@@ -78,7 +78,6 @@ export const UserStore = signalStore(
 
       saveUserProp: rxMethod<PendingChangeType>(
         pipe(
-          tap(r => console.log("changing", r)),
           distinctUntilChanged(),
           takeUntilDestroyed(),
 
@@ -116,8 +115,7 @@ export const UserStore = signalStore(
     })
   ),
   withHooks({
-    async onInit({ saveUserProp,  changeRequest, pendingChange }) {
-      console.log("Initializing User Store");
+    async onInit({ saveUserProp,  changeRequest }) {
       saveUserProp(changeRequest);
     },
   })

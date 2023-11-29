@@ -16,7 +16,10 @@ export const UserIncidentFeature = createFeature({
     name: 'UserIncidentFeature',
     reducer: createReducer(initialState, 
         on(UserDocuments.user, (state, { payload }) => adapter.setAll(payload.userIncidents, state)),
-        on(UserIncidentDocuments.created, (state, { payload }) => adapter.upsertOne(payload, state))),
+        on(UserIncidentDocuments.deleted, (state, { id }) => adapter.removeOne(id, state)),
+        on(UserIncidentDocuments.created, (state, { payload }) => adapter.upsertOne(payload, state)),
+        on(UserIncidentDocuments.updated, (state, a) => adapter.updateOne({id: a.id, changes: a.changes}, state))
+    ),
         extraSelectors: ({ selectEntities, selectIds }) => ({
             all:createSelector(selectIds, selectEntities, (ids, entities) => ids.map(id => entities[id])),
             

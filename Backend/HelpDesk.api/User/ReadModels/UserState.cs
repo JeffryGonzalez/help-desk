@@ -37,10 +37,23 @@ public class UserStateProjection : SingleStreamProjection<UserState>
         } ;
      
     }
-    public UserState Apply(IEvent<UserIncidentCreated> @event, UserState current)
+    public UserState Apply(UserIncidentCreated @event, UserState current)
     {
-        var newIncident = new UserIncident(@event.Data.Id, @event.Timestamp);
+        var newIncident = new UserIncident(@event.Id, @event.Created);
         return current with { UserIncidents = [newIncident, .. current.UserIncidents] };
+    }
+    public UserState Apply(UserIncidentDescriptionUpdated @event, UserState current)
+    {
+        var incident = current.UserIncidents.Single(i => i.Id == @event.Id);
+        incident = incident with { Description = @event.Description };
+        var updatedIncidents = current.UserIncidents.Where(i => i.Id != @event.Id).ToList();
+        updatedIncidents.Add(incident);
+        return current with { UserIncidents = updatedIncidents };
+    }
+
+    public UserState Apply(UserIncidentDeleted @event, UserState current)
+    {
+        return current with { UserIncidents = current.UserIncidents.Where(i => i.Id != @event.Id).ToList() };
     }
 }
 public enum ContactChannelType

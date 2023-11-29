@@ -1,6 +1,8 @@
 import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
 import { UserIncident } from "./state";
-import { computed } from "@angular/core";
+import { computed, inject } from "@angular/core";
+import { Store } from "@ngrx/store";
+import { UserIncidentCommands } from "./state/actions";
 
 
 const initialState: UserIncident = {
@@ -11,16 +13,20 @@ const initialState: UserIncident = {
 
 export const UserIncidentItemStore = signalStore(
 withState(initialState),
-withMethods(({...state}) => ({
+withMethods(({...state}, store = inject(Store)) => ({
     setId(id: string) {
         patchState(state, {id})
     },
+    setIncident(incident: UserIncident) {
+        patchState(state, incident)
+    },
     setDescription(description: string) {
-        patchState(state, {description})
+        store.dispatch(UserIncidentCommands.updateDescription({ payload: { id: state.id(), description } }));
+       patchState(state, {description})
     }
 })), 
-withComputed(({id, description}) => ({
-    ready: computed(() => id() !== '' && description() !== ''),
-    incident: computed(() => ({id: id(), description: description()}))
+withComputed(({id, description, created}) => ({
+    ready: computed(() =>  description() !== ''),
+    incident: computed(() => ({id: id(), description: description(), created: created()}))
 }))
 );

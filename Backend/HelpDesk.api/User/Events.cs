@@ -11,4 +11,7 @@ public record PhoneNumberUpdated(string Value) : UserContactEvent;
 public record ContactMechanismUpdated(ContactChannelType Value): UserContactEvent;
 
 
-public record UserIncidentCreated(Guid Id);
+public record UserIncidentCreated(Guid Id, DateTimeOffset Created);
+public record UserIncidentDescriptionUpdated(Guid Id, string Description);
+
+public record UserIncidentDeleted(Guid Id);
