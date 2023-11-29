@@ -1,30 +1,35 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from "./components";
 import { AuthComponent } from "./auth";
-import { Store } from '@ngrx/store';
-import { AuthActions, AuthFeature } from './auth/state';
+import { HeaderComponent } from "./components";
+import { AuthService } from './auth/auth.service';
 
 @Component({
     selector: 'app-root',
     standalone: true,
     template: `
   <app-header />
-  <app-auth />
     <main class="container mx-auto">
-
+    @if(auth().isLoading) {
+      <div>Loading...</div>
+    }
+    @if(auth().data; as data) {
+      
       <router-outlet />
+    }
+    @if(auth().error) {
+      <div class="alert alert-info">
+        <p>You are not logged in. Please log in.</p>
+        <a class="btn btn-primary" href="/api/login">Log in</a>
+    </div>
+    }
     </main>
   `,
     styleUrl: './app.component.css',
-    imports: [CommonModule, RouterOutlet, HeaderComponent, AuthComponent]
+    imports: [CommonModule, RouterOutlet, HeaderComponent]
 })
 export class AppComponent {
-  title = 'ui';
-  store = inject(Store);
-  constructor() {
-    this.store.dispatch(AuthActions.checkAuth());
-  }
- 
+
+ auth = inject(AuthService).checkAuth().result;
 }

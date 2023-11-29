@@ -14,13 +14,5 @@ import { Router } from '@angular/router';
 export class AuthComponent {
   
 
-  constructor(router: Router) {
-    effect(() => {
-      // if (this.store.isAuthenticated()) {
-      //   // router.navigate(['/user']);
-      // } else {
-      //   router.navigate(['/']);
-      // }
-    });
-  }
+
 }

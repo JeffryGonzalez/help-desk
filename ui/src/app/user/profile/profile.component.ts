@@ -1,7 +1,7 @@
-import { Component, OnInit, Signal, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, Signal, inject, signal } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
 import {  UserStore } from '.';
-import { ContactChannels, UserContactFeature, UserContactKey } from './state';
+import { ContactChannels, UserContact, UserContactFeature, UserContactKey } from './state';
 import { Store } from '@ngrx/store';
 import { UserFeature } from '../state';
 
@@ -105,7 +105,8 @@ import { UserFeature } from '../state';
   `,
   styles: ``,
 })
-export class ProfileComponent  {
+export class ProfileComponent implements OnInit  {
+  @Input( {required: true}) contact!:UserContact;
   store = inject(UserStore);
 
 
@@ -116,5 +117,8 @@ export class ProfileComponent  {
   ]);
   change(key: UserContactKey, value: unknown) {
     this.store.setUserState(key, value);
+  }
+  ngOnInit(): void {
+    this.store.setUser(this.contact);
   }
 }

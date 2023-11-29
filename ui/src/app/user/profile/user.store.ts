@@ -1,4 +1,4 @@
-import { Signal, computed, inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   patchState,
@@ -13,14 +13,10 @@ import { Store } from '@ngrx/store';
 import {
   distinctUntilChanged,
   filter,
-  mergeMap,
   pipe,
-  switchMap,
   tap
 } from 'rxjs';
-import { AuthFeature } from '../../auth/state';
-import { ProfileService } from './profie.service';
-import { UserContactKey, UserContact } from './state';
+import { UserContact, UserContactKey } from './state';
 import { UserContactCommands } from './state/actions';
 
 type ChangeRequest = {

@@ -1,15 +1,15 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Routes } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { AuthFeature } from './auth/state';
+import { map } from 'rxjs';
+import { AuthService } from './auth/auth.service';
 import { HomeComponent } from './home.component';
+import { IncidentItemComponent } from './user/incidents/incident-item.component';
+import { IncidentsListComponent } from './user/incidents/incidents-list.component';
 import { IncidentsComponent } from './user/incidents/incidents.component';
+import { UserIncidentsStore } from './user/incidents/user-incident.store';
 import { UserStore } from './user/profile';
 import { ProfileComponent } from './user/profile/profile.component';
 import { UserComponent } from './user/user.component';
-import { IncidentItemComponent } from './user/incidents/incident-item.component';
-import {  UserIncidentsStore } from './user/incidents/user-incident.store';
-import { IncidentsListComponent } from './user/incidents/incidents-list.component';
 
 export const routes: Routes = [
   {
@@ -47,7 +47,9 @@ export const routes: Routes = [
 
 function loggedInGuard(): CanActivateFn {
   return () => {
-    const store = inject(Store);
-    return store.select(AuthFeature.selectIsAuthenticated);
+    const store = inject(AuthService);
+    return store.checkAuth().result$.pipe(
+      map((x) => !!x),
+    );
   };
 }
