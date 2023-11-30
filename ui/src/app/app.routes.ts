@@ -2,9 +2,8 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Routes } from '@angular/router';
 import { map } from 'rxjs';
 import { AuthService } from './auth/auth.service';
-import { HomeComponent } from './home.component';
 import { IncidentItemComponent, IncidentsComponent, IncidentsListComponent, ProfileComponent, UserComponent, UserProfileStore } from './features/user';
-import { UserIncidentsStore } from './features/user/features/incidents/user-incident.store';
+import { HomeComponent } from './home.component';
 
 
 export const routes: Routes = [
@@ -25,7 +24,7 @@ export const routes: Routes = [
       {
         path: 'incidents',
         component: IncidentsComponent,
-        providers: [UserIncidentsStore],
+        providers: [],
         children: [
           {
             path: '',

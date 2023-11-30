@@ -1,6 +1,8 @@
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { StagedUserIncidentsService } from './services/staged-incident.service';
+import { UserIncident } from './types';
 
 @Component({
   selector: 'app-incident-item',
@@ -8,9 +10,9 @@ import { RouterLink } from '@angular/router';
   imports: [CommonModule, RouterLink, DatePipe, JsonPipe],
   template: `
     <div>
-      <!-- <p>
-        Incident Created on {{ incident()?.created | date : 'shortDate' }} at
-        {{ incident()?.created | date : 'shortTime' }}
+    <p>
+        Incident Created on {{ incident?.created | date : 'shortDate' }} at
+        {{ incident?.created | date : 'shortTime' }}
       </p>
       <div class="form-control">
         <label class="label" for="description">Description</label>
@@ -18,14 +20,14 @@ import { RouterLink } from '@angular/router';
           class="textarea textarea-bordered"
           #description
           (keyup)="change(description.value)"
-          [value]="incident()?.description || ''"
+          [value]="incident?.description || ''"
         ></textarea>
       </div>
       <div>
         <button
           (click)="update()"
           class="btn btn-primary"
-          [disabled]="!itemStore.ready()"
+          
         >
           Submit Incident
         </button>
@@ -38,15 +40,24 @@ import { RouterLink } from '@angular/router';
       <div>
         <a [routerLink]="['..']" class="btn btn-link"> Go Back </a>
       </div>
-      <pre> {{ itemStore.incident() | json }} </pre> -->
+      <pre> {{ incident | json }} </pre>
     </div>
   `,
   styles: ``,
   providers: [],
 })
-export class IncidentItemComponent  {
+export class IncidentItemComponent implements OnInit {
   @Input() id = '';
+  
+  incident:UserIncident | undefined | null = null;
+  private readonly service = inject(StagedUserIncidentsService);
+  ngOnInit() {
+    this.incident = this.service.getStagedIncident(this.id);
 
+  }
+
+  change(val:string) {}
+  update() {}
   // store = inject(Store);
   // incident!: Signal<UserIncident | undefined>;
   // itemStore = inject(UserIncidentItemStore);

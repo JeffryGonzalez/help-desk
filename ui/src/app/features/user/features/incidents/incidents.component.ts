@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { StagedUserIncidentsService } from './services/staged-incident.service';
 
 @Component({
     selector: 'app-incidents',
@@ -10,7 +11,7 @@ import { RouterOutlet } from '@angular/router';
     <h1>Your Incidents</h1>
    </div>
    <section>
-   <button (click)="create()" class="btn btn-primary">Create Incident</button>
+
    </section>
    <section>
   <router-outlet />
@@ -22,7 +23,4 @@ import { RouterOutlet } from '@angular/router';
 export class IncidentsComponent {
 
 
-create() {
- 
-}
 }
