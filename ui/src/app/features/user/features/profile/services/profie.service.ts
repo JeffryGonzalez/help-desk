@@ -21,7 +21,7 @@ export class ProfileService {
   private readonly userId = inject(UserIdService).getUserId();
 
   #getContactOptions = queryOptions({
-    queryKey: ['contact'] as const,
+    queryKey: ['user','contact'] as const,
     queryFn: () => {
       return this.#http.get<UserContact>(`${this.url}users/${this.userId}/contact`);
     },

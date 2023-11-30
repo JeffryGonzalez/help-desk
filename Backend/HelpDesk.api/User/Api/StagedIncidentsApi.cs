@@ -22,4 +22,18 @@ public static class StagedIncidentsApi
         var result = await bus.InvokeAsync<UserIncidentCreated>(command);
         return Results.Ok(result);
     }
+    [WolverinePut("/api/users/{id:guid}/staged-incidents/{incidentId:guid}/description")]
+    public static async Task<IResult> UpdateDescription(PropertyModificationRequest request, Guid id, Guid incidentId, IMessageBus bus)
+    {
+        var cmd = new UpdateDescription(id, incidentId, request.Value);
+        await bus.InvokeAsync(cmd);
+        return TypedResults.Ok();
+    }
+    [WolverineDelete("/api/users/{id:guid}/staged-incidents/{incidentId:guid}")]
+    public static async Task<IResult> DeleteStaged(Guid id, Guid incidentId, IMessageBus bus)
+    {
+        var cmd = new Delete(id, incidentId);
+        await bus.InvokeAsync(cmd);
+        return TypedResults.Ok();
+    }
 }

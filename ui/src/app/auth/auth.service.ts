@@ -15,7 +15,7 @@ export class AuthService {
   checkAuth() {
     
     return this.#query({
-        queryKey: ['auth'] as const,
+        queryKey: ['user'] as const,
         queryFn: () => this.#http.get<UserClaim[]>(`${this.url}user`).pipe(
           map((claims) => {
             const sub = claims.find((x) => x.type === 'sub')?.value;

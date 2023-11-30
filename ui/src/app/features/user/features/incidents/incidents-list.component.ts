@@ -1,7 +1,9 @@
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { StagedUserIncidentsService } from './services/staged-incident.service';
+import { filterSuccessResult, injectIsMutating, tapSuccessResult } from '@ngneat/query';
+import { filter, tap } from 'rxjs';
 
 @Component({
   selector: 'app-incidents-list',
@@ -44,13 +46,24 @@ import { StagedUserIncidentsService } from './services/staged-incident.service';
   `,
   styles: ``,
 })
-export class IncidentsListComponent {
-  incidents = inject(StagedUserIncidentsService).getStagedIncidents().result;
-  createIncident = inject(StagedUserIncidentsService).create();
+export class IncidentsListComponent implements OnInit {
+  private readonly service = inject(StagedUserIncidentsService);
+  private readonly router = inject(Router);
+  private readonly mutating = injectIsMutating();
+  // private readonly isMutating = this.mutating().result$;
+  incidents = this.service.getStagedIncidents().result;
+  createIncident = this.service.create();
+  deleteIncident = this.service.remove();
+  
   delete(id: string) {
-    //this.store.dispatch(UserIncidentCommands.delete({payload: {id}}));
+    this.deleteIncident.mutate({id});
   }
   create() {
     this.createIncident.mutate({});
+  
+  }
+
+  ngOnInit(): void {
+  
   }
 }
