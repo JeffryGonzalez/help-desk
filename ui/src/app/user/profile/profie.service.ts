@@ -1,31 +1,48 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
-import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { AuthFeature } from '../../auth/state';
-import { PendingChangeType, UserState } from './user.store';
+import { injectMutation, injectQuery, injectQueryClient, queryOptions } from '@ngneat/query';
+import { getApiUrl } from '../../auth';
+import { UserIdService } from '../../auth/user-id.service';
+import { UserContact } from './state';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileService {
-  store = inject(Store);
-  //id = this.store.selectSignal(AuthFeature.selectStreamId);
-  constructor(private readonly client: HttpClient) {}
+  private readonly url = getApiUrl();
+  #http = inject(HttpClient);
+  #query = injectQuery();
+  #client = injectQueryClient();
+  #mutation = injectMutation();
+  private readonly userId = inject(UserIdService).getUserId();
 
-  loadUser() {
-    
-    return this.client.get<UserState>('/api/users/' + '');
+  #getContactOptions = queryOptions({
+    queryKey: ['contact'] as const,
+    queryFn: () => {
+      return this.#http.get<UserContact>(`${this.url}users/${this.userId}/contact`);
+    },
+  });
+  
+  getContact() {
+    return this.#query(this.#getContactOptions);
   }
 
-  updateUserContactInfo(id: string, change: PendingChangeType) {
-    if(id === undefined || change === undefined) {
-      return of(undefined) as any;
-    }
-    const path = tToK(change.prop);
-    const update = {value: change.value};
-    return this.client.put('/api/users/' + id + '/' + path, update);
+  changeProperty() {
+    return this.#mutation({
+      mutationFn: ({
+        key,
+        value,
+      }: {
+        key: keyof UserContact;
+        value: unknown;
+      }) => {
+        return this.#http.put(
+          `${this.url}users/${this.userId}/contact/${tToK(key)}`,
+          { value }
+        );
+      },
+    });
   }
 }
 

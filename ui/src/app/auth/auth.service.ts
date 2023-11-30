@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { injectQuery } from '@ngneat/query';
+import { injectQuery, injectQueryClient, queryOptions } from '@ngneat/query';
 import { map } from "rxjs";
 import { getApiUrl } from ".";
 export type UserClaim = { type: string; value: string };
@@ -9,6 +9,9 @@ export class AuthService {
   private readonly url = getApiUrl();
   #http = inject(HttpClient);
   #query = injectQuery();
+  #client = injectQueryClient();
+
+
   checkAuth() {
     
     return this.#query({

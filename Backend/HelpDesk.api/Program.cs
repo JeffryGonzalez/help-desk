@@ -54,7 +54,7 @@ builder.Services.AddMarten(options =>
 {
     options.Connection(connectionString);
     options.Projections.Add<AuthSummaryProjection>(ProjectionLifecycle.Inline);
-    options.Projections.Add<UserStateProjection>(ProjectionLifecycle.Inline);
+    options.Projections.Add<UserContactStateProjection>(ProjectionLifecycle.Inline);
     options.UseDefaultSerialization(
         EnumStorage.AsString,
          nonPublicMembersStorage: NonPublicMembersStorage.All,

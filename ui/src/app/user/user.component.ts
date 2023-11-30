@@ -8,7 +8,9 @@ import { UserContactFeature } from './profile/state';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { UserService } from './user.service';
-import { intersectResults } from '@ngneat/query';
+import { filterSuccessResult, intersectResults } from '@ngneat/query';
+import { UserIdService } from '../auth/user-id.service';
+import { ProfileService } from './profile/profie.service';
 
 @Component({
   selector: 'app-user',
@@ -18,11 +20,9 @@ import { intersectResults } from '@ngneat/query';
     <section class="relative">
       <div class="flex flex-row">
         <div class="basis-1/6 flex">
-          <!-- <pre>{{ contact | json }}</pre> -->
-          <button (click)="doit()">Do it</button>"
           <nav>
             <ul>
-              <!-- <li>
+              <li>
                 @if(store.contactInvalid()) {
                 <div class="indicator">
                   <span class="indicator-item badge badge-success"
@@ -55,7 +55,7 @@ import { intersectResults } from '@ngneat/query';
                 >
                   Incidents</a
                 >
-              </li> -->
+              </li>
             </ul>
           </nav>
         </div>
@@ -68,12 +68,17 @@ import { intersectResults } from '@ngneat/query';
   styles: ``,
 })
 export class UserComponent implements OnInit {
-  private readonly service = inject(UserService);
-  user = this.service.getUser().result;
+  private readonly service = inject(ProfileService);
+  store = inject(UserStore);
+  contact = this.service.getContact().result;
 
-  ngOnInit(): void {}
-  doit() {
-    const contact = this.service.getContact();
-    console.log('contact', contact);
+  ngOnInit(): void {
+    this.service
+      .getContact()
+      .result$.pipe(
+        filterSuccessResult(),
+        tap((result) => this.store.setUser(result.data))
+      )
+      .subscribe();
   }
 }

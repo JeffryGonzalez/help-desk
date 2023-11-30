@@ -13,18 +13,20 @@ import { Store } from '@ngrx/store';
 import {
   distinctUntilChanged,
   filter,
+  from,
   pipe,
-  tap
+  switchMap,
+  mergeMap,
+  tap,
 } from 'rxjs';
 import { UserContact, UserContactKey } from './state';
-import { UserContactCommands } from './state/actions';
+import { UserService } from '../user.service';
+import { ProfileService } from './profie.service';
 
 type ChangeRequest = {
   id: string | undefined;
   pendingChange: PendingChangeType | undefined;
 };
-
-
 
 export type PendingChangeType = { prop: UserContactKey; value: unknown };
 export type UserState = {
@@ -55,13 +57,12 @@ export const UserStore = signalStore(
   withMethods(
     (
       { contact, pendingChange, ...state },
-      store = inject(Store),
+      changeProp = inject(ProfileService).changeProperty()
     ) => ({
-      setUser(user:UserContact) {
-        console.log("setting user", user)
+      setUser(user: UserContact) {
+        console.log('setting user', user);
         patchState(state, {
           contact: user,
-
         });
       },
       setUserState(key: UserContactKey, value: unknown) {
@@ -78,40 +79,51 @@ export const UserStore = signalStore(
           takeUntilDestroyed(),
 
           filter((a) => {
-          
             return a.prop !== undefined;
           }),
-     
-          tap((a) => store.dispatch(UserContactCommands.updateProperty({payload: a}))),
-          tap((a) => patchState(state, { isSavingContactKey: undefined, pendingChange: undefined, contact: { ...contact(), [a.prop]: a.value}  } ))
+          mergeMap((original) =>
+            from(
+              changeProp.mutateAsync({
+                key: original.prop,
+                value: original.value,
+              })
+            ).pipe(
+              tap(() => { // Todo: Need to switchmap or something off the changeProp.result$
+                console.log('success', original);
+                patchState(state, {
+                  isSavingContactKey: undefined,
+                  pendingChange: undefined,
+                  contact: { ...contact(), [original.prop]: original.value },
+                });
+              })
+            )
+          )
         )
       ),
     })
   ),
-  withComputed(
-    (
-      { contact, isSavingContactKey, pendingChange, ...state }, store = inject(Store)
-    ) => ({
-      firstNameIsValid: computed(() => firstNameValid(contact())),
-      lastNameIsValid: computed(() => lastNameValid(contact())),
-      contactChannelIsValid: computed(() => contactChannelIsValid(contact())),
-      contactEmailIsValid: computed(() => emailValid(contact())),
-      contactPhoneIsValid: computed(() => phoneValid(contact())),
-      contactIsValid: computed(() => contactIsValid(contact())),
-      contactInvalid: computed(() => !contactIsValid(contact())),
-      isSavingContact: computed(
-        () =>
-          isSavingContactKey() !== undefined && pendingChange() !== undefined
-      ),
-      streamId: computed(() => ''),
-      changeRequest: computed(
-        () =>
-          ({ prop: pendingChange()?.prop, value: pendingChange()?.value } as PendingChangeType)
-      ),
-    })
-  ),
+  withComputed(({ contact, isSavingContactKey, pendingChange, ...state }) => ({
+    firstNameIsValid: computed(() => firstNameValid(contact())),
+    lastNameIsValid: computed(() => lastNameValid(contact())),
+    contactChannelIsValid: computed(() => contactChannelIsValid(contact())),
+    contactEmailIsValid: computed(() => emailValid(contact())),
+    contactPhoneIsValid: computed(() => phoneValid(contact())),
+    contactIsValid: computed(() => contactIsValid(contact())),
+    contactInvalid: computed(() => !contactIsValid(contact())),
+    isSavingContact: computed(
+      () => isSavingContactKey() !== undefined && pendingChange() !== undefined
+    ),
+    streamId: computed(() => ''),
+    changeRequest: computed(
+      () =>
+        ({
+          prop: pendingChange()?.prop,
+          value: pendingChange()?.value,
+        } as PendingChangeType)
+    ),
+  })),
   withHooks({
-    async onInit({ saveUserProp,  changeRequest }) {
+    async onInit({ saveUserProp, changeRequest }) {
       saveUserProp(changeRequest);
     },
   })

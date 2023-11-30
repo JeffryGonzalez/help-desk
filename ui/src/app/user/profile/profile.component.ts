@@ -106,7 +106,7 @@ import { UserFeature } from '../state';
   styles: ``,
 })
 export class ProfileComponent implements OnInit  {
-  @Input( {required: true}) contact!:UserContact;
+  // @Input( {required: true}) contact!:UserContact;
   store = inject(UserStore);
 
 
@@ -119,6 +119,6 @@ export class ProfileComponent implements OnInit  {
     this.store.setUserState(key, value);
   }
   ngOnInit(): void {
-    this.store.setUser(this.contact);
+    // this.store.setUser(this.contact);
   }
 }
