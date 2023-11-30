@@ -53,6 +53,7 @@ export class IncidentItemComponent implements OnInit {
   private readonly service = inject(StagedUserIncidentsService);
   ngOnInit() {
     this.incident = this.service.getStagedIncident(this.id);
+    console.log('Incident Item', this.incident);
 
   }
 

@@ -25,10 +25,10 @@ export class StagedUserIncidentsService {
     queryKey: ['user', 'staged-incidents'] as const,
     queryFn: () => {
       return this.#http
-        .get<{ incidents: UserIncident[] }>(
+        .get< UserIncident[] >(
           `${this.url}users/${this.userId}/staged-incidents`
         )
-        .pipe(map(({ incidents }) => ({ incidents })));
+      
     },
   });
 
@@ -42,7 +42,7 @@ export class StagedUserIncidentsService {
     );
 
     if (incidents) {
-      return incidents.incidents.find((i) => i.id === id);
+      return incidents.find((i) => i.id === id);
     }
     return null;
   }
@@ -55,11 +55,14 @@ export class StagedUserIncidentsService {
           variables
         );
       },
-      onSuccess(data, variables, context) {
+      onSuccess: (newIncident) => {
+        this.#client.setQueryData(
+          ['user', 'staged-incidents'], (old: UserIncident[]) => [...old, newIncident]
           
+        );
       },
     });
-  }
+}
 
   changeDescription() {
     return this.#mutation({
@@ -81,20 +84,17 @@ export class StagedUserIncidentsService {
 
   remove() {
     return this.#mutation({
-        mutationFn: ({id}:{id:string}) => {
-            return this.#http.delete(`${this.url}users/${this.userId}/staged-incidents/${id}`)  
-        },
-        onSuccess:(_, { id}) => {
-           console.log(id);
-           let data = this.#client.getQueryData(this.#getContactOptions.queryKey);
-           if(data) {
-            if(data?.incidents.length !== 0) {
-                data = {...data, incidents: data.incidents.filter(i => i.id !==id)};
-                console.log(data);
-                this.#client.setQueryData(this.#getContactOptions.queryKey, data);
-            }
-        }
-        }
-    })
+      mutationFn: ({ id }: { id: string }) => {
+        return this.#http.delete(
+          `${this.url}users/${this.userId}/staged-incidents/${id}`
+        );
+      },
+      onSuccess: (_, variables) => {
+        this.#client.setQueryData(
+          ['user', 'staged-incidents'],
+          (old: UserIncident[]) =>old.filter((i) => i.id !== variables.id)
+        );
+      },
+    });
   }
 }

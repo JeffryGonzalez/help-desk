@@ -12,7 +12,7 @@ public static class StagedIncidentsApi
     [WolverineGet("api/users/{id:guid}/staged-incidents")]
     public static IResult Get([Document] StagedUserIncidentsState response)
     {
-        return TypedResults.Ok(response);
+        return TypedResults.Ok(response.Incidents);
     }
 
     [WolverinePost("/api/users/{id:guid}/staged-incidents")]

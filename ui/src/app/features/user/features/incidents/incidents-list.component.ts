@@ -3,7 +3,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { StagedUserIncidentsService } from './services/staged-incident.service';
 import { filterSuccessResult, injectIsMutating, tapSuccessResult } from '@ngneat/query';
-import { filter, tap } from 'rxjs';
+import { filter, from, take, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-incidents-list',
@@ -16,9 +17,9 @@ import { filter, tap } from 'rxjs';
     </button>
     @if(incidents().isLoading) {
     <span class="loading loading-ring loading-lg"></span>
-    } @if(incidents().data; as data) { @if(data.incidents.length === 0) {
+    } @if(incidents().data; as data) { @if(data.length === 0) {
     <p>You have no staged incidents.</p>
-    } @else { @for(i of data.incidents; track i.id) {
+    } @else { @for(i of data; track i.id) {
 
     <div class="card  bg-base-200 shadow-xl mb-4">
       <div class="card-body ">
@@ -57,10 +58,13 @@ export class IncidentsListComponent implements OnInit {
   
   delete(id: string) {
     this.deleteIncident.mutate({id});
+   
   }
   create() {
-    this.createIncident.mutate({});
-  
+    from(this.createIncident.mutateAsync({})).pipe(
+      take(1),
+      tap(({id}) => this.router.navigate(['user','incidents', id])),
+    ).subscribe();
   }
 
   ngOnInit(): void {
