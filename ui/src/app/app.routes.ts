@@ -3,13 +3,9 @@ import { CanActivateFn, Routes } from '@angular/router';
 import { map } from 'rxjs';
 import { AuthService } from './auth/auth.service';
 import { HomeComponent } from './home.component';
-import { IncidentItemComponent } from './user/incidents/incident-item.component';
-import { IncidentsListComponent } from './user/incidents/incidents-list.component';
-import { IncidentsComponent } from './user/incidents/incidents.component';
-import { UserIncidentsStore } from './user/incidents/user-incident.store';
-import { UserStore } from './user/profile';
-import { ProfileComponent } from './user/profile/profile.component';
-import { UserComponent } from './user/user.component';
+import { IncidentItemComponent, IncidentsComponent, IncidentsListComponent, ProfileComponent, UserComponent, UserProfileStore } from './features/user';
+import { UserIncidentsStore } from './features/user/features/incidents/user-incident.store';
+
 
 export const routes: Routes = [
   {
@@ -20,7 +16,7 @@ export const routes: Routes = [
     path: 'user',
     component: UserComponent,
     canActivate: [loggedInGuard()],
-    providers: [UserStore],
+    providers: [UserProfileStore],
     children: [
       {
         path: 'profile',

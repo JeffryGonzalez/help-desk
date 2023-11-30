@@ -1,14 +1,12 @@
-import { Component, Input, OnInit, Signal, inject, signal } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
-import {  UserStore } from '.';
-import { ContactChannels, UserContact, UserContactFeature, UserContactKey } from './state';
-import { Store } from '@ngrx/store';
-import { UserFeature } from '../state';
+import { Component, OnInit, Signal, inject, signal } from '@angular/core';
+import { UserProfileStore } from '.';
+import { ContactChannels, UserContactKey } from './types';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, JsonPipe],
+  imports: [CommonModule],
   template: `
     <div class="w-auto basis-full">
       <form>
@@ -101,13 +99,11 @@ import { UserFeature } from '../state';
         </div>
       </form>
     </div>
-    <pre>Change: {{ store.pendingChange() | json }}</pre>
   `,
   styles: ``,
 })
 export class ProfileComponent implements OnInit  {
-  // @Input( {required: true}) contact!:UserContact;
-  store = inject(UserStore);
+  store = inject(UserProfileStore);
 
 
   contactChannels: Signal<ContactChannels[]> = signal([
@@ -119,6 +115,6 @@ export class ProfileComponent implements OnInit  {
     this.store.setUserState(key, value);
   }
   ngOnInit(): void {
-    // this.store.setUser(this.contact);
+    
   }
 }

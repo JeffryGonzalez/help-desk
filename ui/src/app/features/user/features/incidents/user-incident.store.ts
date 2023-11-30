@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 
-import { UserIncident } from "./state";
+import { UserIncident } from "./types";
 
 
  type UserIncidentState =  {

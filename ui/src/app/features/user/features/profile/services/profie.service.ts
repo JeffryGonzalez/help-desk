@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
-import { injectMutation, injectQuery, injectQueryClient, queryOptions } from '@ngneat/query';
-import { getApiUrl } from '../../auth';
-import { UserIdService } from '../../auth/user-id.service';
-import { UserContact } from './state';
+import { injectMutation, injectQuery, queryOptions } from '@ngneat/query';
+
+import { UserContact } from '../types';
+
+import { getApiUrl } from '@auth/index';
+import { UserIdService } from '@auth/user-id.service';
+
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +16,7 @@ export class ProfileService {
   private readonly url = getApiUrl();
   #http = inject(HttpClient);
   #query = injectQuery();
-  #client = injectQueryClient();
+
   #mutation = injectMutation();
   private readonly userId = inject(UserIdService).getUserId();
 

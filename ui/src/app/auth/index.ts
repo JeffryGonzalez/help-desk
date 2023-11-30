@@ -12,4 +12,3 @@ export function getCurrentHost() {
   return url;
 }
 
-export * from './auth.component';

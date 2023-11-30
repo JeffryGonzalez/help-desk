@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { AuthFeature } from "../../auth/state";
 import { HttpClient } from "@angular/common/http";
-import { UserIncident } from "./state";
+import { UserIncident } from "./types";
 
 
 

@@ -1,10 +1,6 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
-import { UserIncidentsStore } from './user-incident.store';
-import { Store } from '@ngrx/store';
-import { UserIncidentFeature } from './state';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { UserIncidentCommands } from './state/actions';
 
 @Component({
   selector: 'app-incidents-list',
@@ -13,7 +9,7 @@ import { UserIncidentCommands } from './state/actions';
   template: `
     <p class="text-2xl">Unsubmitted Incidents</p>
     <p>These incidents have not been submitted yet.</p>
-    @if(incidents() !== undefined) { @for(i of incidents(); track i?.id) {
+    <!-- @if(incidents() !== undefined) { @for(i of incidents(); track i?.id) {
 
     <div class="card  bg-base-100 shadow-xl">
       <div class="card-body">
@@ -34,17 +30,14 @@ import { UserIncidentCommands } from './state/actions';
           }
         </div>
       </div>
-    </div>
-    } }
+    </div> -->
+    <!-- } } -->
   `,
   styles: ``,
 })
 export class IncidentsListComponent {
-  private readonly store = inject(Store);
-
-  incidents = this.store.selectSignal(UserIncidentFeature.all);
-
+  
   delete(id: string) {
-    this.store.dispatch(UserIncidentCommands.delete({payload: {id}}));
+    //this.store.dispatch(UserIncidentCommands.delete({payload: {id}}));
   }
 }

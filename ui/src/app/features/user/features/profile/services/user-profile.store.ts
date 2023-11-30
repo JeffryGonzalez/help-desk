@@ -9,24 +9,17 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { Store } from '@ngrx/store';
 import {
   distinctUntilChanged,
   filter,
   from,
-  pipe,
-  switchMap,
   mergeMap,
-  tap,
+  pipe,
+  tap
 } from 'rxjs';
-import { UserContact, UserContactKey } from './state';
-import { UserService } from '../user.service';
 import { ProfileService } from './profie.service';
+import { UserContact, UserContactKey } from '../types';
 
-type ChangeRequest = {
-  id: string | undefined;
-  pendingChange: PendingChangeType | undefined;
-};
 
 export type PendingChangeType = { prop: UserContactKey; value: unknown };
 export type UserState = {
@@ -52,7 +45,7 @@ const initialState: UserState = {
   isSavingContactKey: undefined,
   pendingChange: undefined,
 };
-export const UserStore = signalStore(
+export const UserProfileStore = signalStore(
   withState(initialState),
   withMethods(
     (

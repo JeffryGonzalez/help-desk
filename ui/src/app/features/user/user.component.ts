@@ -1,16 +1,10 @@
-import { Component, OnInit, computed, effect, inject } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { UserStore } from './profile';
-import { Store } from '@ngrx/store';
-import { UserFeature } from './state';
-import { UserContactFeature } from './profile/state';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filterSuccessResult } from '@ngneat/query';
 import { tap } from 'rxjs';
-import { UserService } from './user.service';
-import { filterSuccessResult, intersectResults } from '@ngneat/query';
-import { UserIdService } from '../auth/user-id.service';
-import { ProfileService } from './profile/profie.service';
+import { UserProfileStore } from './features/profile';
+import { ProfileService } from './features/profile/services/profie.service';
 
 @Component({
   selector: 'app-user',
@@ -69,7 +63,7 @@ import { ProfileService } from './profile/profie.service';
 })
 export class UserComponent implements OnInit {
   private readonly service = inject(ProfileService);
-  store = inject(UserStore);
+  store = inject(UserProfileStore);
   contact = this.service.getContact().result;
 
   ngOnInit(): void {

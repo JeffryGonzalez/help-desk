@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { injectQuery, injectQueryClient, queryOptions } from '@ngneat/query';
 import { getApiUrl } from '../auth';
 import { AuthService } from '../auth/auth.service';
-import { UserState } from './state';
+import { UserState } from './types';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {

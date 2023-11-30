@@ -1,7 +1,5 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { UserIncidentCommands } from './state/actions';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -22,9 +20,9 @@ import { RouterOutlet } from '@angular/router';
     imports: [CommonModule, RouterOutlet]
 })
 export class IncidentsComponent {
-private readonly store = inject(Store);
+
 
 create() {
-  this.store.dispatch(UserIncidentCommands.create());
+ 
 }
 }

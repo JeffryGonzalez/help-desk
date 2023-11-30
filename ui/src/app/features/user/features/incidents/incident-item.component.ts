@@ -1,8 +1,5 @@
-import { Component, Input, OnInit, Signal, inject } from '@angular/core';
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { UserIncident, UserIncidentFeature } from './state';
-import { UserIncidentItemStore } from './incident-item.store';
+import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -11,7 +8,7 @@ import { RouterLink } from '@angular/router';
   imports: [CommonModule, RouterLink, DatePipe, JsonPipe],
   template: `
     <div>
-      <p>
+      <!-- <p>
         Incident Created on {{ incident()?.created | date : 'shortDate' }} at
         {{ incident()?.created | date : 'shortTime' }}
       </p>
@@ -41,30 +38,30 @@ import { RouterLink } from '@angular/router';
       <div>
         <a [routerLink]="['..']" class="btn btn-link"> Go Back </a>
       </div>
-      <pre> {{ itemStore.incident() | json }} </pre>
+      <pre> {{ itemStore.incident() | json }} </pre> -->
     </div>
   `,
   styles: ``,
-  providers: [UserIncidentItemStore],
+  providers: [],
 })
-export class IncidentItemComponent implements OnInit {
+export class IncidentItemComponent  {
   @Input() id = '';
 
-  store = inject(Store);
-  incident!: Signal<UserIncident | undefined>;
-  itemStore = inject(UserIncidentItemStore);
-  ngOnInit(): void {
-    this.incident = this.store.selectSignal(
-      UserIncidentFeature.getById(this.id)
-    );
-    // this.itemStore.setId(this.id);
-    this.itemStore.setIncident(this.incident()!);
-  }
-  change(d: string) {
-    this.itemStore.setDescription(d);
-  }
+  // store = inject(Store);
+  // incident!: Signal<UserIncident | undefined>;
+  // itemStore = inject(UserIncidentItemStore);
+  // ngOnInit(): void {
+  //   this.incident = this.store.selectSignal(
+  //     UserIncidentFeature.getById(this.id)
+  //   );
+  //   // this.itemStore.setId(this.id);
+  //   this.itemStore.setIncident(this.incident()!);
+  // }
+  // change(d: string) {
+  //   this.itemStore.setDescription(d);
+  // }
 
-  update() {
-    console.log(this.itemStore.incident());
-  }
+  // update() {
+  //   console.log(this.itemStore.incident());
+  // }
 }

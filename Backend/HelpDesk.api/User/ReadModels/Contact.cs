@@ -1,6 +1,6 @@
 ﻿using HelpDesk.api.Auth;
 using Marten.Events.Aggregation;
-
+using static HelpDesk.api.User.UserContactEvent;
 namespace HelpDesk.api.User.ReadModels;
 
 public record ContactState

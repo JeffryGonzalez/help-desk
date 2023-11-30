@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { AuthComponent } from "./auth";
-import { HeaderComponent } from "./components";
-import { AuthService } from './auth/auth.service';
 import { filterSuccessResult } from '@ngneat/query';
 import { tap } from 'rxjs';
+import { AuthService } from './auth/auth.service';
 import { UserIdService } from './auth/user-id.service';
+import { HeaderComponent } from "./components";
 
 @Component({
   selector: 'app-root',
