@@ -1,22 +1,32 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable, inject } from "@angular/core";
-import { getApiUrl } from "../auth";
-import { injectQuery } from "@ngneat/query";
-import { UserState } from "./state";
-import { AuthService } from "../auth/auth.service";
-import { map } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { injectQuery, injectQueryClient, queryOptions } from '@ngneat/query';
+import { getApiUrl } from '../auth';
+import { AuthService } from '../auth/auth.service';
+import { UserState } from './state';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private readonly url = getApiUrl();
   #http = inject(HttpClient);
   #query = injectQuery();
-private readonly id = inject(AuthService).checkAuth().result;
+  #client = injectQueryClient();
+  private readonly id = inject(AuthService).checkAuth().result;
+  #getUsersOptions = queryOptions({
+    queryKey: ['user'] as const,
+    queryFn: () => {
+      return this.#http.get<UserState>(`${this.url}users/${this.id().data}`);
+    },
+  });
   getUser() {
-    return this.#query({
-      queryKey: ['user'] as const,
-      queryFn: () => this.#http.get<UserState>(`${this.url}users/${this.id().data}`)
-    })
+    return this.#query(this.#getUsersOptions);
   }
-
+  getContact() {
+    const user = this.#client.getQueryData(this.#getUsersOptions.queryKey);
+    if (user) {
+      return user.contact;
+    } else {
+      return null;
+    }
+  }
 }

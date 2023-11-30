@@ -8,7 +8,7 @@ import { UserContactFeature } from './profile/state';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { UserService } from './user.service';
-
+import { intersectResults } from '@ngneat/query';
 
 @Component({
   selector: 'app-user',
@@ -18,7 +18,8 @@ import { UserService } from './user.service';
     <section class="relative">
       <div class="flex flex-row">
         <div class="basis-1/6 flex">
-          <pre>{{ user().data?.contact | json }}</pre>
+          <!-- <pre>{{ contact | json }}</pre> -->
+          <button (click)="doit()">Do it</button>"
           <nav>
             <ul>
               <!-- <li>
@@ -60,16 +61,19 @@ import { UserService } from './user.service';
         </div>
         <div class="flex basis-auto w-full">
           <router-outlet></router-outlet>
-         
-       
         </div>
       </div>
     </section>
   `,
   styles: ``,
 })
-export class UserComponent  {
+export class UserComponent implements OnInit {
+  private readonly service = inject(UserService);
+  user = this.service.getUser().result;
 
-  user = inject(UserService).getUser().result;
-
+  ngOnInit(): void {}
+  doit() {
+    const contact = this.service.getContact();
+    console.log('contact', contact);
+  }
 }
