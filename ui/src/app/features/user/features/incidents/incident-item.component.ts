@@ -1,8 +1,10 @@
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { StagedUserIncidentsService } from './services/staged-incident.service';
 import { UserIncident } from './types';
+import { IncidentItemStore } from './services/incident-item.store';
+import { from, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-incident-item',
@@ -10,24 +12,24 @@ import { UserIncident } from './types';
   imports: [CommonModule, RouterLink, DatePipe, JsonPipe],
   template: `
     <div>
-    <p>
-        Incident Created on {{ incident?.created | date : 'shortDate' }} at
-        {{ incident?.created | date : 'shortTime' }}
+      <p>
+        Incident Created on {{ item.created() | date : 'shortDate' }} at
+        {{ item.created() | date : 'shortTime' }}
       </p>
       <div class="form-control">
         <label class="label" for="description">Description</label>
         <textarea
           class="textarea textarea-bordered"
           #description
-          (keyup)="change(description.value)"
-          [value]="incident?.description || ''"
+          (change)="change(description.value)"
+          [value]="item.description() || ''"
         ></textarea>
       </div>
       <div>
         <button
+          [disabled]="item.isInvalid()"
           (click)="update()"
           class="btn btn-primary"
-          
         >
           Submit Incident
         </button>
@@ -35,45 +37,37 @@ import { UserIncident } from './types';
           Save For Later
         </a>
 
-        <button class="btn btn-error">Delete</button>
+        <button (click)="delete()" class="btn btn-error">Delete</button>
       </div>
       <div>
         <a [routerLink]="['..']" class="btn btn-link"> Go Back </a>
       </div>
-      <pre> {{ incident | json }} </pre>
+
     </div>
   `,
   styles: ``,
-  providers: [],
+  providers: [IncidentItemStore],
 })
 export class IncidentItemComponent implements OnInit {
   @Input() id = '';
-  
-  incident:UserIncident | undefined | null = null;
-  private readonly service = inject(StagedUserIncidentsService);
-  ngOnInit() {
-    this.incident = this.service.getStagedIncident(this.id);
-    console.log('Incident Item', this.incident);
+  item = inject(IncidentItemStore);
+  service = inject(StagedUserIncidentsService);
 
+  private deleteIncident = this.service.remove();
+  private readonly router = inject(Router);
+  ngOnInit() {
+    const incident = this.service.getStagedIncident(this.id);
+    this.item.setIncident(incident!);
   }
 
-  change(val:string) {}
+  change(val: string) {
+    this.item.changeDescription(val);
+  }
   update() {}
-  // store = inject(Store);
-  // incident!: Signal<UserIncident | undefined>;
-  // itemStore = inject(UserIncidentItemStore);
-  // ngOnInit(): void {
-  //   this.incident = this.store.selectSignal(
-  //     UserIncidentFeature.getById(this.id)
-  //   );
-  //   // this.itemStore.setId(this.id);
-  //   this.itemStore.setIncident(this.incident()!);
-  // }
-  // change(d: string) {
-  //   this.itemStore.setDescription(d);
-  // }
-
-  // update() {
-  //   console.log(this.itemStore.incident());
-  // }
+  delete() {
+    from(this.deleteIncident.mutateAsync({ id: this.id })).pipe(
+      take(1),
+      tap(() => this.router.navigate(['user', 'incidents']))
+    ).subscribe();
+  }
 }

@@ -4,5 +4,8 @@
         "*.css": "tailwindcss"
     },
     "tailwindCSS.emmetCompletions": true,
-    "editor.minimap.enabled": false
+    "editor.minimap.enabled": false,
+    "workbench.colorCustomizations": {
+        "tree.indentGuidesStroke": "#d0ff00"
+    }
 }

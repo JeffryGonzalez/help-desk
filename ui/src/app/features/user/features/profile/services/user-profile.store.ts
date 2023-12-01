@@ -53,7 +53,6 @@ export const UserProfileStore = signalStore(
       changeProp = inject(ProfileService).changeProperty()
     ) => ({
       setUser(user: UserContact) {
-        console.log('setting user', user);
         patchState(state, {
           contact: user,
         });
@@ -82,7 +81,6 @@ export const UserProfileStore = signalStore(
               })
             ).pipe(
               tap(() => { // Todo: Need to switchmap or something off the changeProp.result$
-                console.log('success', original);
                 patchState(state, {
                   isSavingContactKey: undefined,
                   pendingChange: undefined,

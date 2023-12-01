@@ -74,8 +74,8 @@ export class StagedUserIncidentsService {
         description: string;
       }) => {
         return this.#http.put(
-          `${this.url}users/${this.userId}/staged-incidents/${id}`,
-          { description }
+          `${this.url}users/${this.userId}/staged-incidents/${id}/description`,
+          { value: description }
         );
       },
     });
