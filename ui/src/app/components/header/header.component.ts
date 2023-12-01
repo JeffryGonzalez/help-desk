@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -12,10 +12,10 @@ import { RouterLink } from '@angular/router';
       <ul class="menu menu-horizontal px-1">
         <li><a routerLink="/user">Your User</a></li>
         <li>
-          <details>
+          <details #d>
             <summary>Account</summary>
             <ul class="p-2 bg-base-100">
-              <li><a routerLink="/profile">Profile</a></li>
+              <li><a (click)="go('/user/profile', d)">Profile</a></li>
               <li><a href="/api/logout">Signout</a></li>
             </ul>
           </details>
@@ -25,4 +25,12 @@ import { RouterLink } from '@angular/router';
   </div>`,
   imports: [RouterLink],
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  router = inject(Router);
+
+  go(route: string, d: HTMLDetailsElement) {
+    d.toggleAttribute('open');
+    this.router.navigate([route]);
+  }
+ 
+}

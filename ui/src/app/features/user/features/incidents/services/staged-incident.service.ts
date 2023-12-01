@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { getApiUrl } from '@auth/index';
-import { UserIdService } from '@auth/user-id.service';
 import {
   injectMutation,
   injectQuery,
@@ -9,27 +8,26 @@ import {
   queryOptions,
 } from '@ngneat/query';
 import { UserIncident } from '../types';
-import { map } from 'rxjs';
-import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class StagedUserIncidentsService {
   private readonly url = getApiUrl();
+  #someId = injectQueryClient()
+    .getQueryCache()
+    .find({ queryKey: ['user', 'id'] });
   #http = inject(HttpClient);
   #query = injectQuery();
   #client = injectQueryClient();
   #mutation = injectMutation();
-  #router = inject(Router);
-  private readonly userId = inject(UserIdService).getUserId();
+  #streamId = this.#someId?.state.data;
   #getContactOptions = queryOptions({
     queryKey: ['user', 'staged-incidents'] as const,
     queryFn: () => {
-      return this.#http
-        .get< UserIncident[] >(
-          `${this.url}users/${this.userId}/staged-incidents`
-        )
-      
+      return this.#http.get<UserIncident[]>(
+        `${this.url}users/${this.#streamId}/staged-incidents`
+      );
     },
+    enabled: !!this.#streamId,
   });
 
   getStagedIncidents() {
@@ -51,18 +49,18 @@ export class StagedUserIncidentsService {
     return this.#mutation({
       mutationFn: (variables = {}) => {
         return this.#http.post<UserIncident>(
-          `${this.url}users/${this.userId}/staged-incidents`,
+          `${this.url}users/${this.#streamId}/staged-incidents`,
           variables
         );
       },
       onSuccess: (newIncident) => {
         this.#client.setQueryData(
-          ['user', 'staged-incidents'], (old: UserIncident[]) => [...old, newIncident]
-          
+          ['user', 'staged-incidents'],
+          (old: UserIncident[]) => [...old, newIncident]
         );
       },
     });
-}
+  }
 
   changeDescription() {
     return this.#mutation({
@@ -74,7 +72,7 @@ export class StagedUserIncidentsService {
         description: string;
       }) => {
         return this.#http.put(
-          `${this.url}users/${this.userId}/staged-incidents/${id}/description`,
+          `${this.url}users/${this.#streamId}/staged-incidents/${id}/description`,
           { value: description }
         );
       },
@@ -86,13 +84,13 @@ export class StagedUserIncidentsService {
     return this.#mutation({
       mutationFn: ({ id }: { id: string }) => {
         return this.#http.delete(
-          `${this.url}users/${this.userId}/staged-incidents/${id}`
+          `${this.url}users/${this.#streamId}/staged-incidents/${id}`
         );
       },
       onSuccess: (_, variables) => {
         this.#client.setQueryData(
           ['user', 'staged-incidents'],
-          (old: UserIncident[]) =>old.filter((i) => i.id !== variables.id)
+          (old: UserIncident[]) => old.filter((i) => i.id !== variables.id)
         );
       },
     });

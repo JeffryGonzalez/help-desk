@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { injectQuery, injectQueryClient, queryOptions } from '@ngneat/query';
+import { injectQuery } from '@ngneat/query';
 import { map } from "rxjs";
 import { getApiUrl } from ".";
 export type UserClaim = { type: string; value: string };
@@ -9,21 +9,24 @@ export class AuthService {
   private readonly url = getApiUrl();
   #http = inject(HttpClient);
   #query = injectQuery();
-  #client = injectQueryClient();
-
 
   checkAuth() {
     
     return this.#query({
-        queryKey: ['user'] as const,
+        queryKey: ['user', 'id'] as const,
+        retry: (count, error) => {
+          const e = error as unknown as {status: number};
+          if(e?.status === 401)  {return false;}
+          return count > 3 ? false : true;
+        },
         queryFn: () => this.#http.get<UserClaim[]>(`${this.url}user`).pipe(
           map((claims) => {
-            const sub = claims.find((x) => x.type === 'sub')?.value;
             const streamId = claims.find((x) => x.type === 'stream_id')?.value;
-      
-            return streamId!;
+            return streamId;
           })
         )
-    })
+    }
+    )
   }
 }
+

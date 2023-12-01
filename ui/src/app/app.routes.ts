@@ -22,7 +22,7 @@ export const routes: Routes = [
         component: ProfileComponent,
       },
       {
-        path: 'incidents',
+        path: 'pending-incidents',
         component: IncidentsComponent,
         providers: [],
         children: [

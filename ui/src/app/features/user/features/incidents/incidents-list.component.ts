@@ -1,10 +1,9 @@
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { injectIsMutating } from '@ngneat/query';
+import { from, take, tap } from 'rxjs';
 import { StagedUserIncidentsService } from './services/staged-incident.service';
-import { filterSuccessResult, injectIsMutating, tapSuccessResult } from '@ngneat/query';
-import { filter, from, take, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-incidents-list',

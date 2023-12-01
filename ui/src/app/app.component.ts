@@ -4,7 +4,6 @@ import { Router, RouterOutlet } from '@angular/router';
 import { filterSuccessResult } from '@ngneat/query';
 import { tap } from 'rxjs';
 import { AuthService } from './auth/auth.service';
-import { UserIdService } from './auth/user-id.service';
 import { HeaderComponent } from "./components";
 
 @Component({
@@ -34,12 +33,10 @@ export class AppComponent implements OnInit  {
   private readonly router = inject(Router);
   auth = this.service.checkAuth().result;
 
-  private readonly userId = inject(UserIdService);
 
   ngOnInit() {
     this.service.checkAuth().result$.pipe(
       filterSuccessResult(),
-      tap((result) => this.userId.setUserId(result.data)),
       tap(() => this.router.navigate(['/user'])
     )).subscribe();
   }

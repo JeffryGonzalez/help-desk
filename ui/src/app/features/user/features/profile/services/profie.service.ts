@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
-import { injectMutation, injectQuery, queryOptions } from '@ngneat/query';
+import { injectMutation, injectQuery, injectQueryClient, queryOptions } from '@ngneat/query';
 
 import { UserContact } from '../types';
 
 import { getApiUrl } from '@auth/index';
-import { UserIdService } from '@auth/user-id.service';
 
 
 @Injectable({
@@ -16,18 +15,24 @@ export class ProfileService {
   private readonly url = getApiUrl();
   #http = inject(HttpClient);
   #query = injectQuery();
-
+  #someId = injectQueryClient()
+    .getQueryCache()
+    .find({ queryKey: ['user', 'id'] });
   #mutation = injectMutation();
-  private readonly userId = inject(UserIdService).getUserId();
-
-  #getContactOptions = queryOptions({
-    queryKey: ['user','contact'] as const,
-    queryFn: () => {
-      return this.#http.get<UserContact>(`${this.url}users/${this.userId}/contact`);
-    },
-  });
+  #streamId = this.#someId?.state.data;
   
+  #getContactOptions = queryOptions({
+    queryKey: ['user', 'contact'] as const,
+    queryFn: () => {
+      return this.#http.get<UserContact>(
+        `${this.url}users/${this.#streamId}/contact`
+      );
+    },
+   enabled: !!this.#streamId
+  });
+
   getContact() {
+    console.log(this.#someId?.state.data);
     return this.#query(this.#getContactOptions);
   }
 
@@ -41,7 +46,7 @@ export class ProfileService {
         value: unknown;
       }) => {
         return this.#http.put(
-          `${this.url}users/${this.userId}/contact/${tToK(key)}`,
+          `${this.url}users/${this.#streamId}/contact/${tToK(key)}`,
           { value }
         );
       },

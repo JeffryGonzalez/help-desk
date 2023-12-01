@@ -44,10 +44,10 @@ import { ProfileService } from './features/profile/services/profie.service';
                     'pointer-events-none': store.contactInvalid(),
                     'brightness-50': store.contactInvalid()
                   }"
-                  routerLink="incidents"
+                  routerLink="pending-incidents"
                   class="btn btn-nav btm-nav-sm w-full mb-2"
                 >
-                  Incidents</a
+                  Pending<br />Incidents</a
                 >
               </li>
             </ul>
