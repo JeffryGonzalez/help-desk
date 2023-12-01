@@ -20,7 +20,7 @@ export class ProfileService {
     .find({ queryKey: ['user', 'id'] });
   #mutation = injectMutation();
   #streamId = this.#someId?.state.data;
-  
+
   #getContactOptions = queryOptions({
     queryKey: ['user', 'contact'] as const,
     queryFn: () => {
@@ -32,7 +32,6 @@ export class ProfileService {
   });
 
   getContact() {
-    console.log(this.#someId?.state.data);
     return this.#query(this.#getContactOptions);
   }
 

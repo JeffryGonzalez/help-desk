@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { injectIsMutating } from '@ngneat/query';
 import { from, take, tap } from 'rxjs';
 import { StagedUserIncidentsService } from './services/staged-incident.service';
+import { IncidentsService } from './services/incidents.service';
 
 @Component({
   selector: 'app-incidents-list',
@@ -37,7 +38,7 @@ import { StagedUserIncidentsService } from './services/staged-incident.service';
             Delete
           </button>
           @if(i?.description) {
-          <button class="btn btn-sm btn-primary">Submit</button>
+          <button (click)="submit(i.id)" class="btn btn-sm btn-primary">Submit</button>
           }
         </div>
       </div>
@@ -52,21 +53,25 @@ export class IncidentsListComponent implements OnInit {
   private readonly mutating = injectIsMutating();
   // private readonly isMutating = this.mutating().result$;
   incidents = this.service.getStagedIncidents().result;
-  createIncident = this.service.create();
-  deleteIncident = this.service.remove();
+  createStagedIncident = this.service.create();
+  deleteStagedIncident = this.service.remove();
+  createIncident = inject(IncidentsService).create();
   
   delete(id: string) {
-    this.deleteIncident.mutate({id});
+    this.deleteStagedIncident.mutate({id});
    
   }
   create() {
-    from(this.createIncident.mutateAsync({})).pipe(
+    from(this.createStagedIncident.mutateAsync({})).pipe(
       take(1),
-      tap(({id}) => this.router.navigate(['user','incidents', id])),
+      tap(({id}) => this.router.navigate(['user','pending-incidents', id])),
     ).subscribe();
   }
 
   ngOnInit(): void {
   
+  }
+  submit(id: string) {
+    this.createIncident.mutate({id});
   }
 }

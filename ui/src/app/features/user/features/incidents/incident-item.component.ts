@@ -33,7 +33,7 @@ import { from, take, tap } from 'rxjs';
         >
           Submit Incident
         </button>
-        <a routerLink="/user/incidents" class="btn btn-primary">
+        <a [routerLink]="['..']" class="btn btn-primary">
           Save For Later
         </a>
 
@@ -67,7 +67,7 @@ export class IncidentItemComponent implements OnInit {
   delete() {
     from(this.deleteIncident.mutateAsync({ id: this.id })).pipe(
       take(1),
-      tap(() => this.router.navigate(['user', 'incidents']))
+      tap(() => this.router.navigate(['..']))
     ).subscribe();
   }
 }

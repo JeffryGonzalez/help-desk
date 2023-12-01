@@ -13,7 +13,7 @@ public abstract record UserContactEvent
 
 public abstract record UserStagedIncidentEvents
 {
-    public record UserIncidentCreated(Guid Id, DateTimeOffset Created) : UserStagedIncidentEvents;
+    public record UserIncidentCreated(Guid Id, DateTimeOffset Created, string Description = "") : UserStagedIncidentEvents;
     public record UserIncidentDescriptionUpdated(Guid Id, string Description) : UserStagedIncidentEvents;
 
     public record UserIncidentDeleted(Guid Id) : UserStagedIncidentEvents;
