@@ -30,9 +30,42 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "71a36f76d14db465",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "UserIncidents/Events.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
+      },
+      {
+        "id": "626483f3097f3e47",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "acfcd0fc2eabcb0a",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "UserIncidents/User Incidents.canvas",
+                "viewState": {
+                  "x": -329.5,
+                  "y": -138.5,
+                  "zoom": 0
+                }
+              }
+            }
+          }
+        ]
       }
     ],
     "direction": "vertical"
@@ -98,7 +131,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Dev and Build Process.md",
+                "file": "UserIncidents/User Incidents.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +148,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Dev and Build Process.md",
+                "file": "UserIncidents/User Incidents.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +171,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Dev and Build Process.md"
+                "file": "UserIncidents/User Incidents.canvas"
               }
             }
           }
@@ -160,10 +193,17 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "618773c2bd490a66",
+  "active": "acfcd0fc2eabcb0a",
   "lastOpenFiles": [
-    "adr/100 Backend for Frontend.md",
+    "UserIncidents/Events.md",
+    "UserIncidents/User Incidents.canvas",
+    "UserIncidents/Commands.md",
+    "UserIncidents/Commands/Create.md",
+    "UserIncidents/Commands",
+    "UserIncidents",
+    "Plan.md",
     "Dev and Build Process.md",
+    "adr/100 Backend for Frontend.md",
     "Backend For Frontend.md",
     "_templates/adr.md",
     "adr/Untitled 2.md",
