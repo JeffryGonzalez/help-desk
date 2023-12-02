@@ -1,0 +1,175 @@
+{
+  "main": {
+    "id": "b362c3a10331f009",
+    "type": "split",
+    "children": [
+      {
+        "id": "a1da0428111e9941",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ffefaef53eba2d88",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "adr/100 Backend for Frontend.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "618773c2bd490a66",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Dev and Build Process.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ff37ac077226e599",
+    "type": "split",
+    "children": [
+      {
+        "id": "d4db4058debd3d60",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e86b82b1a3e0d92f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "71b3e3052e1f6fec",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "25e2852783e24bdf",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "04f7d78c95bfc96d",
+    "type": "split",
+    "children": [
+      {
+        "id": "fe3f5fca49cb0498",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a4ee03536b12d4cd",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Dev and Build Process.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "0595c7d3888e2d11",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Dev and Build Process.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "d2b7238841ea28ec",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "6eacca565ee65e12",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Dev and Build Process.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "618773c2bd490a66",
+  "lastOpenFiles": [
+    "adr/100 Backend for Frontend.md",
+    "Dev and Build Process.md",
+    "Backend For Frontend.md",
+    "_templates/adr.md",
+    "adr/Untitled 2.md",
+    "adr/Untitled 1.md",
+    "adr/Backend For Frontend.md",
+    "_templates",
+    "adr"
+  ]
+}
