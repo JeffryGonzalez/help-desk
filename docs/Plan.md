@@ -6,6 +6,7 @@ Need to look at what the sample code does. It feels dumb to send the contact inf
 ## Frontend Routing
 
 I think the default route of `user` is sort of dumb. Not sure what I was thinking there.
+Maybe the default could be `incidents`. This will make room later for other things.
 
 ## I want to simplify the UI a bit. 
 - When they add an issue, maybe do it as a modal?
@@ -30,3 +31,16 @@ I don't like that an issue can be filed with just a description. I think my stuf
 They are *also* a user, I suppose. I *think* they should be able to log issues, and log them on behalf of another user. 
 
 Finding users by:  Last Name | Email Address 
+
+
+## Hypermedia on the `/api/users/{id}`?
+
+Thinking this can all be relative links for now.
+
+- Could contain links to their:
+	- Contact Information `/api/users/{id}/contact`
+	- Incidents `/api/users/{id}/incidents`
+		- Maybe this could be "staged" incidents and actually submitted incidents.
+		- Is it important to differentiate the two?
+			- An incident isn't put through the flow until it is [[Events#Logged]]
+			- 
