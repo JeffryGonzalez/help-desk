@@ -35,16 +35,16 @@ export class AppComponent {
   auth = this.service.checkAuth().result;
 
   constructor() {
-    this.service
-      .checkAuth()
-      .result$.pipe(
-        filterSuccessResult(),
-        takeUntilDestroyed(),
-        map(() => this.router.routerState.snapshot.url),
-        filter((r) => r === '/'),
-        tap(() => this.router.navigate(['/user']))
-      )
-      .subscribe();
+    // this.service
+    //   .checkAuth()
+    //   .result$.pipe(
+    //     filterSuccessResult(),
+    //     takeUntilDestroyed(),
+    //     map(() => this.router.routerState.snapshot.url),
+    //     filter((r) => r === '/'),
+    //     tap(() => this.router.navigate(['/user']))
+    //   )
+    //   .subscribe();
   }
 
 

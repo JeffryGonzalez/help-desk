@@ -1,12 +1,13 @@
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, Signal, inject, signal } from '@angular/core';
 import { UserProfileStore } from '.';
 import { ContactChannels, UserContactKey } from './types';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="w-auto basis-full">
       <form>
@@ -98,6 +99,7 @@ import { ContactChannels, UserContactKey } from './types';
           />
         </div>
       </form>
+      <a class="btn btn-primary" (click)="location.back()">Go Back</a>
     </div>
   `,
   styles: ``,
@@ -105,7 +107,7 @@ import { ContactChannels, UserContactKey } from './types';
 export class ProfileComponent implements OnInit  {
   store = inject(UserProfileStore);
 
-
+ constructor(public readonly location:Location){}
   contactChannels: Signal<ContactChannels[]> = signal([
     'Email',
     'Phone',
@@ -117,4 +119,6 @@ export class ProfileComponent implements OnInit  {
   ngOnInit(): void {
     
   }
+
+ 
 }

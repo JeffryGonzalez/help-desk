@@ -3,22 +3,26 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { injectIsMutating } from '@ngneat/query';
 import { from, take, tap } from 'rxjs';
-import { StagedUserIncidentsService } from './services/staged-incident.service';
 import { IncidentsService } from './services/incidents.service';
+import { StagedUserIncidentsService } from './services/staged-incident.service';
+import { IncidentListHeaderComponent } from './incident-list-header.component';
 
 @Component({
   selector: 'app-incidents-list',
   standalone: true,
-  imports: [CommonModule, JsonPipe, RouterLink, DatePipe],
+  imports: [
+    CommonModule,
+    JsonPipe,
+    RouterLink,
+    DatePipe,
+    IncidentListHeaderComponent,
+  ],
   template: `
-    <p class="text-2xl">Unsubmitted Incidents</p>
-    <button (click)="create()" class="btn btn-primary btn-xs">
-      Create Incident
-    </button>
+    <app-incident-list-header />
     @if(incidents().isLoading) {
     <span class="loading loading-ring loading-lg"></span>
     } @if(incidents().data; as data) { @if(data.length === 0) {
-    <p>You have no staged incidents.</p>
+    <p>You have no incidents.</p>
     } @else { @for(i of data; track i.id) {
 
     <div class="card  bg-base-200 shadow-xl mb-4">
@@ -38,7 +42,9 @@ import { IncidentsService } from './services/incidents.service';
             Delete
           </button>
           @if(i?.description) {
-          <button (click)="submit(i.id)" class="btn btn-sm btn-primary">Submit</button>
+          <button (click)="submit(i.id)" class="btn btn-sm btn-primary">
+            Submit
+          </button>
           }
         </div>
       </div>
@@ -51,27 +57,26 @@ export class IncidentsListComponent implements OnInit {
   private readonly service = inject(StagedUserIncidentsService);
   private readonly router = inject(Router);
   private readonly mutating = injectIsMutating();
-  // private readonly isMutating = this.mutating().result$;
+
   incidents = this.service.getStagedIncidents().result;
   createStagedIncident = this.service.create();
   deleteStagedIncident = this.service.remove();
   createIncident = inject(IncidentsService).create();
-  
+
   delete(id: string) {
-    this.deleteStagedIncident.mutate({id});
-   
+    this.deleteStagedIncident.mutate({ id });
   }
   create() {
-    from(this.createStagedIncident.mutateAsync({})).pipe(
-      take(1),
-      tap(({id}) => this.router.navigate(['user','pending-incidents', id])),
-    ).subscribe();
+    from(this.createStagedIncident.mutateAsync({}))
+      .pipe(
+        take(1),
+        tap(({ id }) => this.router.navigate(['user', 'pending-incidents', id]))
+      )
+      .subscribe();
   }
 
-  ngOnInit(): void {
-  
-  }
+  ngOnInit(): void {}
   submit(id: string) {
-    this.createIncident.mutate({id});
+    this.createIncident.mutate({ id });
   }
 }
