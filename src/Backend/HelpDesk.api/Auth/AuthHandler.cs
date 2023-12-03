@@ -8,7 +8,7 @@ public class AuthHandler
 
     public static async Task HandleAsync(ProcessLogin command, IDocumentSession session)
     {
-        var user = await session.Query<AuthSummary>().Where(u => u.Sub == command.Sub).SingleOrDefaultAsync();
+        var user = await session.Query<AuthSummary>().Where(u => u.Sub == command.Sub).SingleOrDefaultAsync(); // TODO #2 Add an Index for this query. @JeffryGonzalez
         if (user is null)
         {
             var newId = Guid.NewGuid();

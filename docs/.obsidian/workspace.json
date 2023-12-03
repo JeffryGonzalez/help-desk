@@ -47,14 +47,49 @@
             "id": "82de2e52fd4f131d",
             "type": "leaf",
             "state": {
-              "type": "excalidraw",
+              "type": "markdown",
               "state": {
-                "file": "Excalidraw/Drawing 2023-12-02 11.11.50.excalidraw.md"
+                "file": "Plan.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "c992719416d2c8bd",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "Auth/Auth.canvas",
+                "viewState": {
+                  "x": -304,
+                  "y": -201,
+                  "zoom": 0
+                }
               }
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 4
+      },
+      {
+        "id": "4f47a52aa7904261",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "51db7f48ed2a5ffd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Auth/Events.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
       }
     ],
     "direction": "vertical"
@@ -120,7 +155,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Excalidraw/Drawing 2023-12-02 11.11.50.excalidraw.md",
+                "file": "Auth/Events.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -137,7 +172,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Excalidraw/Drawing 2023-12-02 11.11.50.excalidraw.md",
+                "file": "Auth/Events.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -160,7 +195,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Excalidraw/Drawing 2023-12-02 11.11.50.excalidraw.md"
+                "file": "Auth/Events.md"
               }
             }
           }
@@ -183,15 +218,20 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "82de2e52fd4f131d",
+  "active": "51db7f48ed2a5ffd",
   "lastOpenFiles": [
+    "Auth/Auth.canvas",
+    "Auth/Events.md",
+    "Auth/auth.excalidraw.md",
+    "Auth/Commands.md",
+    "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md",
     "Plan.md",
-    "Excalidraw/Drawing 2023-12-02 11.11.50.excalidraw.md",
+    "Auth",
+    "UserIncidents/User Incidents.canvas",
     "Excalidraw",
     "UserIncidents/Commands.md",
     "UserIncidents/Read Models.md",
     "UserIncidents/Events.md",
-    "UserIncidents/User Incidents.canvas",
     "UserIncidents/Commands/Create.md",
     "UserIncidents/Commands",
     "UserIncidents",

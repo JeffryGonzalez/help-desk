@@ -4,6 +4,7 @@ using Wolverine;
 
 namespace HelpDesk.api.Auth;
 
+// TODO #1 Rename this. @JeffryGonzalez
 public class CustomOidcEventTypes : BffOpenIdConnectEvents
 {
     private readonly IMessageBus _bus;
