@@ -1,4 +1,10 @@
 
+## Creating an Issue
+
+> "No Modal Interactions"
+
+When they hit "Create Incident" it shows the form, but they can't submit it until they've filled out a profile.
+
 ## The "Issue Logged" Thing
 
 Need to look at what the sample code does. It feels dumb to send the contact information as part of the request.

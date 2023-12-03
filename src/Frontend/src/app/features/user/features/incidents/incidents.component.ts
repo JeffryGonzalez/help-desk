@@ -8,9 +8,7 @@ import { DetailsComponent } from "./incident-details.component";
     selector: 'app-incidents',
     standalone: true,
     template: `
-    <button (click)="create()" class="btn btn-primary btn-xs">
-      Create Incident
-    </button>
+    
     <section class="flex">
       <app-incidents-list class="basis-1/2"></app-incidents-list>
       <app-incident-details></app-incident-details>

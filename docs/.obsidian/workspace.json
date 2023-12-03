@@ -83,7 +83,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Auth/Events.md",
+                "file": "Plan.md",
                 "mode": "source",
                 "source": false
               }
@@ -155,7 +155,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Auth/Events.md",
+                "file": "Plan.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -172,7 +172,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Auth/Events.md",
+                "file": "Plan.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -195,7 +195,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Auth/Events.md"
+                "file": "Plan.md"
               }
             }
           }
@@ -220,8 +220,8 @@
   },
   "active": "51db7f48ed2a5ffd",
   "lastOpenFiles": [
-    "Auth/Auth.canvas",
     "Auth/Events.md",
+    "Auth/Auth.canvas",
     "Auth/auth.excalidraw.md",
     "Auth/Commands.md",
     "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md",
