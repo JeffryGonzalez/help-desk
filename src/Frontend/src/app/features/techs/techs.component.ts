@@ -1,46 +1,25 @@
 import { DatePipe, JsonPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { UnassignedIncidentsService } from './services/unassigned-incidents.service';
-
+import {formatDistanceToNow} from 'date-fns'
+import { UnassignedIncidentListComponent } from "./components/unassigned-incident-list.component";
 @Component({
   selector: 'app-techs',
   standalone: true,
   template: `
-    @if(unassigned().isLoading) {
-    <div class="loading loading-spinner loading-lg"></div>
-    } @else { @for(i of unassigned().data; track i.id) {
-
-    <details class="collapse bg-base-200 mb-4">
-      <summary
-        class="collapse-title text-xl font-medium"
-        (click)="get(i.customerId)"
-      >
-        {{ i.description }}
-        <span class="text-sm">{{ i.created | date : 'fullDate' }}</span>
-        <div>
-          <button class="btn btn-accent btn-sm">Take This Issue</button>
+    <div class="container mx-auto">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-1">
+          <p class="font-extrabold text-2xl">Unassigned Incidents</p>
+          <app-unassigned-incident-list></app-unassigned-incident-list>
         </div>
-      </summary>
-      <div class="collapse-content">
-        @if(i.customerInfo) {
-        <p>{{ i.customerInfo.firstName }} {{ i.customerInfo.lastName }}</p>
-        <p>{{ i.customerInfo.emailAddress }}</p>
-        <p>{{ i.customerInfo.phoneNumber }}</p>
-        }
+        <div class="col-span-1">
+          <p class="font-extrabold text-2xl">Incidents Assigned To You</p>
+        </div>
       </div>
-    </details>
-
-    } }
+    </div>
   `,
   styles: ``,
-  imports: [JsonPipe, DatePipe],
+  imports: [UnassignedIncidentListComponent],
 })
-export class TechsComponent {
-  private readonly service = inject(UnassignedIncidentsService);
-  unassigned = this.service.get().result;
-  private getCustomerInfo = this.service.getContactForIncident();
-
-  get(userId: string) {
-    this.getCustomerInfo.mutate({ userId });
-  }
-}
+export class TechsComponent {}
