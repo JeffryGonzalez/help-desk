@@ -6,6 +6,7 @@ import { injectMutation, injectQuery, injectQueryClient, queryOptions } from '@n
 import { UserContact } from '../types';
 
 import { getApiUrl } from '@auth/index';
+import { UserMeta } from '@auth/auth.service';
 
 
 @Injectable({
@@ -15,11 +16,11 @@ export class ProfileService {
   private readonly url = getApiUrl();
   #http = inject(HttpClient);
   #query = injectQuery();
-  #someId = injectQueryClient()
+  userMeta = injectQueryClient()
     .getQueryCache()
-    .find({ queryKey: ['user', 'id'] });
+    .find<UserMeta>({ queryKey: ['user', 'meta'] });
   #mutation = injectMutation();
-  #streamId = this.#someId?.state.data;
+  #streamId = this.userMeta?.state.data as UserMeta;
 
   #getContactOptions = (userId:string) => queryOptions({
     queryKey: ['user', 'contact'] as const,
@@ -32,8 +33,8 @@ export class ProfileService {
   });
 
   getContact() {
-    const id = this.#streamId as unknown as string;
-    return this.#query(this.#getContactOptions(id));
+    const id = this.#streamId
+    return this.#query(this.#getContactOptions(id.id));
   }
   getContactForUser(id: string) {
     return this.#query(this.#getContactOptions(id));
@@ -49,7 +50,7 @@ export class ProfileService {
         value: unknown;
       }) => {
         return this.#http.put(
-          `${this.url}users/${this.#streamId}/contact/${tToK(key)}`,
+          `${this.url}users/${this.#streamId.id}/contact/${tToK(key)}`,
           { value }
         );
       },

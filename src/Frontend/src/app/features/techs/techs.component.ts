@@ -1,12 +1,12 @@
-import { DatePipe, JsonPipe } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
-import { UnassignedIncidentsService } from './services/unassigned-incidents.service';
-import {formatDistanceToNow} from 'date-fns'
-import { UnassignedIncidentListComponent } from "./components/unassigned-incident-list.component";
+import { Component, inject } from '@angular/core';
+import { UnassignedIncidentListComponent } from './components/unassigned-incident-list.component';
+import { AuthService } from '@auth/auth.service';
+import { JsonPipe } from '@angular/common';
 @Component({
   selector: 'app-techs',
   standalone: true,
   template: `
+  <p>You are a tech? {{ isTech().data | json }}</p>
     <div class="container mx-auto">
       <div class="grid grid-cols-2 gap-4">
         <div class="col-span-1">
@@ -20,6 +20,11 @@ import { UnassignedIncidentListComponent } from "./components/unassigned-inciden
     </div>
   `,
   styles: ``,
-  imports: [UnassignedIncidentListComponent],
+  imports: [UnassignedIncidentListComponent, JsonPipe],
 })
-export class TechsComponent {}
+export class TechsComponent {
+  service = inject(AuthService);
+
+  isTech = this.service.isTech().result;
+  
+}

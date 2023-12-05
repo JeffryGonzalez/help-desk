@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
+import { UserMeta } from "@auth/auth.service";
 import { getApiUrl } from "@auth/index";
 import { QueryClient, injectMutation, injectQuery, injectQueryClient, queryOptions } from "@ngneat/query";
 import { ProfileService } from "app/features/user/features/profile/services";
@@ -15,14 +16,14 @@ type UnassignedIncidentsState = {
 @Injectable({ providedIn: 'root' })
 export class UnassignedIncidentsService {
   private readonly url = getApiUrl();
-  #someId = injectQueryClient()
+  meta = injectQueryClient()
     .getQueryCache()
-    .find({ queryKey: ['user', 'id'] });
+    .find<UserMeta>({ queryKey: ['user', 'meta'] });
   #http = inject(HttpClient);
  #client = injectQueryClient();
   #query = injectQuery();
 
-  #streamId = this.#someId?.state.data;
+  #streamId = this.meta?.state.data as UserMeta;
   #mutation = injectMutation();
   #getUnassignedIncidents = queryOptions({
     queryKey: ['user', 'tech', 'unassigned-incidents'] as const,
@@ -33,11 +34,12 @@ export class UnassignedIncidentsService {
         )
        
     },
-    enabled: !!this.#streamId,
+    enabled: !!this.#streamId?.id && this.#streamId?.isTech,
   });
 
 
   get() {
+    console.log(this.#streamId)
     return this.#query(this.#getUnassignedIncidents);
   }
 
