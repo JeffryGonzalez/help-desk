@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { IncidentsService } from './services/incidents.service';
+import { injectIsMutating } from '@ngneat/query';
 
 @Component({
   selector: 'app-incident-create',
@@ -12,7 +14,8 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
       <form [formGroup]="form" (ngSubmit)="add()">
         <div class="form-control">
           <label class="label" for="description">Description</label>
-          <textarea formControlName="description"
+          <textarea
+            formControlName="description"
             class="textarea textarea-bordered"
             id="description"
             name="description"
@@ -20,7 +23,9 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
         </div>
         <div class="modal-action">
           <button type="submit" class="btn btn-primary">Log Incident</button>
-          <button (click)="cancel()" type="button" class="btn btn-primary">Cancel</button>
+          <button (click)="cancel()" type="button" class="btn btn-secondary">
+            Cancel
+          </button>
         </div>
       </form>
     </div>
@@ -28,12 +33,15 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
   styles: ``,
 })
 export class IncidentCreateComponent {
+  createIncident = inject(IncidentsService).create();
+  private readonly mutating = injectIsMutating();
   @Output() done = new EventEmitter<void>();
   form = new FormGroup({
     description: new FormControl<string>('', { nonNullable: true }),
   });
 
   add() {
+    this.createIncident.mutate({description: this.form.controls.description.value!});
     console.log(this.form.value);
     this.done.emit();
   }

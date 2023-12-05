@@ -24,6 +24,7 @@ const initialState: UserIncidentState = {
     description: '',
     created: '',
     id: '',
+    status: ''
   },
   isSavingDescription: false,
   pendingChange: undefined,

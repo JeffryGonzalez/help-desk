@@ -21,18 +21,22 @@ export class ProfileService {
   #mutation = injectMutation();
   #streamId = this.#someId?.state.data;
 
-  #getContactOptions = queryOptions({
+  #getContactOptions = (userId:string) => queryOptions({
     queryKey: ['user', 'contact'] as const,
     queryFn: () => {
       return this.#http.get<UserContact>(
-        `${this.url}users/${this.#streamId}/contact`
+        `${this.url}users/${userId}/contact`
       );
     },
    enabled: !!this.#streamId
   });
 
   getContact() {
-    return this.#query(this.#getContactOptions);
+    const id = this.#streamId as unknown as string;
+    return this.#query(this.#getContactOptions(id));
+  }
+  getContactForUser(id: string) {
+    return this.#query(this.#getContactOptions(id));
   }
 
   changeProperty() {

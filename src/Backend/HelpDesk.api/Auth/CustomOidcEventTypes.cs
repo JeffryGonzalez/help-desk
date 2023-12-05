@@ -20,9 +20,10 @@ public class CustomOidcEventTypes : BffOpenIdConnectEvents
         {
             var sub = context.Principal.Claims.SingleOrDefault(c => c.Type == "sub");
             var iss = context.Principal.Claims.SingleOrDefault(c => c.Type == "iss")?.Value;
+            var isTech = context.Principal.Claims.Any(c => c.Type == "roles" && c.Value == "tech");
             if (sub is not null)
             {
-                await _bus.PublishAsync(new ProcessLogin(sub.Value, iss ?? ""));
+                await _bus.PublishAsync(new ProcessLogin(sub.Value, iss ?? "", isTech));
 
             }
         }

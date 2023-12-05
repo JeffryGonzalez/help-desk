@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { loggedInGuard } from './auth';
 import { IncidentItemComponent, IncidentsComponent, IncidentsListComponent, ProfileComponent, UserComponent, UserProfileStore } from './features/user';
 import { HomeComponent } from './home.component';
+import { TechsComponent } from './features/techs/techs.component';
 
 
 export const routes: Routes = [
@@ -11,6 +12,10 @@ export const routes: Routes = [
     canActivate: [loggedInGuard()],
     providers: [UserProfileStore],
     children: [
+      {
+        path: 'techs',
+        component: TechsComponent
+      },
       {
         path: 'incidents',
         component: IncidentsComponent,

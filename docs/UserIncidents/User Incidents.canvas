@@ -2,8 +2,6 @@
 	"nodes":[
 		{"id":"ae133a0dcbb2eb3d","type":"text","text":"[[Commands#Create | Create]]","x":-614,"y":-337,"width":250,"height":60,"color":"3"},
 		{"id":"8c827c20d729cf0a","type":"text","text":"[[Events#Created | Created]]","x":-260,"y":-337,"width":250,"height":60,"color":"#3238ec"},
-		{"id":"5da85e9f40e7cffb","type":"text","text":"[[Commands#Provide Description| Provide Description]]","x":-669,"y":-220,"width":305,"height":50,"color":"3"},
-		{"id":"99a08944cc54dc83","type":"text","text":"[[Events#Description Set | Description Set]]","x":-240,"y":-225,"width":250,"height":60,"color":"#3238ec"},
 		{"id":"6dfdf9f83e7c3e02","type":"text","text":"[[Commands#Delete | Delete]]","x":-669,"y":-120,"width":305,"height":50,"color":"3"},
 		{"id":"db1c9a82269b240b","type":"text","text":"[[Events#Deleted | Deleted]]","x":-240,"y":-130,"width":250,"height":60,"color":"#3238ec"},
 		{"id":"de877978afe07e19","type":"text","text":"[[Commands#Log | Log]]","x":-669,"y":0,"width":305,"height":50,"color":"3"},
@@ -11,7 +9,6 @@
 	],
 	"edges":[
 		{"id":"9056bbe6fb67fbd0","fromNode":"ae133a0dcbb2eb3d","fromSide":"right","toNode":"8c827c20d729cf0a","toSide":"left"},
-		{"id":"2d1fe79c1d5b7f1b","fromNode":"5da85e9f40e7cffb","fromSide":"right","toNode":"99a08944cc54dc83","toSide":"left"},
 		{"id":"fea120a0a4440189","fromNode":"6dfdf9f83e7c3e02","fromSide":"right","toNode":"db1c9a82269b240b","toSide":"left"},
 		{"id":"ac8b38709c3a7769","fromNode":"de877978afe07e19","fromSide":"right","toNode":"d5f78efeba55aa20","toSide":"left"}
 	]

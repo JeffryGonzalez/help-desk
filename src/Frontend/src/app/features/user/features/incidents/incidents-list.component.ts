@@ -1,11 +1,12 @@
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { injectIsMutating } from '@ngneat/query';
-import { from, take, tap } from 'rxjs';
-import { IncidentsService } from './services/incidents.service';
-import { StagedUserIncidentsService } from './services/staged-incident.service';
+import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { filterSuccessResult, injectIsMutating } from '@ngneat/query';
+import { tap } from 'rxjs';
 import { IncidentListHeaderComponent } from './incident-list-header.component';
+import { IncidentListStore } from './services/incident-list.store';
+import { IncidentsService } from './services/incidents.service';
 
 @Component({
   selector: 'app-incidents-list',
@@ -19,64 +20,55 @@ import { IncidentListHeaderComponent } from './incident-list-header.component';
   ],
   template: `
     <app-incident-list-header />
+    <!-- <pre> {{ listStore.incidentEntities() | json }} </pre> -->
     @if(incidents().isLoading) {
     <span class="loading loading-ring loading-lg"></span>
-    } @if(incidents().data; as data) { @if(data.length === 0) {
+    } @if(listStore.incidentEntities(); as data) { @if( data.length === 0) {
     <p>You have no incidents.</p>
     } @else { @for(i of data; track i.id) {
 
     <div class="card  bg-base-200 shadow-xl mb-4">
       <div class="card-body ">
-        @if(i?.description) {
-        <p>{{ i?.description }}</p>
-        } @else {
-        <p>No Description Yet</p>
-        }
+        <p>{{ i.description }}</p>
         <p>
-          Created on {{ i?.created | date : 'shortDate' }} at
-          {{ i?.created | date : 'shortTime' }}
+          Created on {{ i.created | date : 'shortDate' }} at
+          {{ i.created | date : 'shortTime' }}
         </p>
         <div class="card-actions justify-end">
-          <a [routerLink]="[i!.id]" class="btn btn-sm btn-primary">Edit</a>
-          <button (click)="delete(i!.id)" class="btn btn-sm btn-error">
-            Delete
+          <button
+            [disabled]="i.status !== 'Pending'"
+            (click)="delete(i.id)"
+            class="btn btn-sm btn-error"
+          >
+            Cancel Pending Incident
           </button>
-          @if(i?.description) {
-          <button (click)="submit(i.id)" class="btn btn-sm btn-primary">
-            Submit
-          </button>
-          }
         </div>
       </div>
     </div>
     } } }
   `,
   styles: ``,
+  providers: [IncidentListStore],
 })
-export class IncidentsListComponent implements OnInit {
-  private readonly service = inject(StagedUserIncidentsService);
-  private readonly router = inject(Router);
+export class IncidentsListComponent {
+  private readonly service = inject(IncidentsService);
   private readonly mutating = injectIsMutating();
-
-  incidents = this.service.getStagedIncidents().result;
-  createStagedIncident = this.service.create();
-  deleteStagedIncident = this.service.remove();
-  createIncident = inject(IncidentsService).create();
+  listStore = inject(IncidentListStore);
+  incidents = this.service.get().result;
 
   delete(id: string) {
-    this.deleteStagedIncident.mutate({ id });
-  }
-  create() {
-    from(this.createStagedIncident.mutateAsync({}))
-      .pipe(
-        take(1),
-        tap(({ id }) => this.router.navigate(['user', 'pending-incidents', id]))
-      )
-      .subscribe();
+    // this.deleteStagedIncident.mutate({ id });
+    // const c = this.listStore.
   }
 
-  ngOnInit(): void {}
-  submit(id: string) {
-    this.createIncident.mutate({ id });
+  constructor() {
+    this.service
+      .get()
+      .result$.pipe(
+        filterSuccessResult(),
+        takeUntilDestroyed(),
+        tap((result) => this.listStore.setIncidents(result.data))
+      )
+      .subscribe();
   }
 }

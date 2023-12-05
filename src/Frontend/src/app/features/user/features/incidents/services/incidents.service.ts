@@ -3,6 +3,7 @@ import { Injectable, inject } from "@angular/core";
 import { getApiUrl } from "@auth/index";
 import { injectQueryClient, injectQuery, injectMutation, queryOptions } from "@ngneat/query";
 import { UserIncident } from "../types";
+import { map } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class IncidentsService {
@@ -18,21 +19,30 @@ export class IncidentsService {
   #getContactOptions = queryOptions({
     queryKey: ['user', 'incidents'] as const,
     queryFn: () => {
-      return this.#http.get<UserIncident[]>(
+      return this.#http.get<{incidents: UserIncident[]}>(
         `${this.url}users/${this.#streamId}/incidents`
-      );
+      ).pipe(map(({incidents}) => incidents))
     },
     enabled: !!this.#streamId,
   });
 
   create() {
     return this.#mutation({
-        mutationFn: ({id}:{id: string}) => {
-            return this.#http.post<{id: string}>(
+        mutationFn: ({description}:{description: string}) => {
+            return this.#http.post<{id: string, description: string}>(
                 `${this.url}users/${this.#streamId}/incidents`,
-                {id}
+                {description}
             );
+        },
+        onSuccess: (newIncident) => {
+          this.#client.setQueryData(['user','incidents'], (old: UserIncident[]) => [...old, newIncident])
         }
-    })
+    },
+  
+    )
+  }
+
+  get() {
+    return this.#query(this.#getContactOptions);
   }
 }

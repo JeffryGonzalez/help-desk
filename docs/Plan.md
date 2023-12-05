@@ -1,13 +1,13 @@
 
-## Creating an Issue
 
-> "No Modal Interactions"
+## How does it get assigned to a tech?
 
-When they hit "Create Incident" it shows the form, but they can't submit it until they've filled out a profile.
+If the user is a "tech" - they have the `{roles: ["tech"] }` claim - they should be able to:
 
-## The "Issue Logged" Thing
-
-Need to look at what the sample code does. It feels dumb to send the contact information as part of the request.
+- See a stream of all unassigned issues.
+- Reveal the user for the issue?
+- "Take On" that issue.
+- 
 
 ## Frontend Routing
 

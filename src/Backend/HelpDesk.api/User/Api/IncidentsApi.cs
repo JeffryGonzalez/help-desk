@@ -8,11 +8,16 @@ namespace HelpDesk.api.User.Api;
 
 public static class IncidentsApi
 {
+    [WolverineGet("/api/users/{id:guid}/incidents")]
+    public static IResult GetIncidents(Guid id, [Document] CustomerIncidents response)
+    {
+        return TypedResults.Ok(response);
+    }
     [WolverinePost("/api/users/{id:guid}/incidents")]
-    public static async Task<IResult> AddIncident(CreateUserIncidentRequest request, [Document] ContactState contact, Guid id, IDocumentSession session, IMessageBus bus)
+    public static async Task<IResult> AddIncident(CreateUserIncidentRequest request, Guid id, IDocumentSession session, IMessageBus bus)
     {
 
-        var command = new CreateUserIncident(id, request.Id, contact);
+        var command = new CreateUserIncident(id, request.Description);
         var response = await bus.InvokeAsync<CreatedUserIncident>(command);
         return TypedResults.Ok(response);
 
@@ -22,14 +27,13 @@ public static class IncidentsApi
 
 public record CreateUserIncident(
     Guid CustomerId,
-    Guid StagedIncidentId,
-    ContactState Contact
+    string Description
     );
 public record CreateUserIncidentRequest(
-    Guid Id
+    string Description
     );
 
-public record CreatedUserIncident(Guid Id);
+public record CreatedUserIncident(Guid Id, string Description);
 
 public record IncidentLogged(
     Guid CustomerId,

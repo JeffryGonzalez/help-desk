@@ -11,6 +11,7 @@ import { Router, RouterLink } from '@angular/router';
     <div class="flex-none">
       <ul class="menu menu-horizontal px-1">
         <li><a routerLink="/user">Your User</a></li>
+        <li><a routerLink="/techs">Techs</a></li>
         <li>
           <details #d>
             <summary>Account</summary>
@@ -32,5 +33,4 @@ export class HeaderComponent {
     d.toggleAttribute('open');
     this.router.navigate([route]);
   }
- 
 }

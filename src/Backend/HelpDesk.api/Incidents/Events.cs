@@ -4,7 +4,7 @@ namespace HelpDesk.api.Incidents;
 
 
 public record IncidentLogged(
+    Guid Id,
     Guid CustomerId,
-    ContactState Contact,
     string Description,
     Guid LoggedBy);
