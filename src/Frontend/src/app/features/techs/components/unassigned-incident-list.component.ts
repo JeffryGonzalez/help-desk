@@ -1,5 +1,5 @@
 import { DatePipe, JsonPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { formatDistanceToNow } from 'date-fns';
 import { UnassignedIncidentsService } from '../services/unassigned-incidents.service';
 
@@ -8,29 +8,34 @@ import { UnassignedIncidentsService } from '../services/unassigned-incidents.ser
   standalone: true,
   imports: [JsonPipe, DatePipe],
   template: `
-   @if(unassigned().isLoading) {
+    @if(unassigned().isLoading) {
     <div class="loading loading-spinner loading-lg"></div>
     } @else { @for(i of unassigned().data; track i.id) {
 
-    <details class="collapse bg-base-200 mb-4" title="Click to See User">
+    <details
+      class="collapse collapse-arrow bg-base-200 mb-4"
+      title="Click to See User"
+    >
       <summary
         class="collapse-title text-xl font-medium"
         (click)="get(i.customerId)"
       >
-        {{ i.description }}
+        <p class="truncate">{{ i.description }}</p>
         <span class="text-sm block"
           >Logged {{ i.created | date : 'fullDate' }} ({{
             getHumanized(i.created)
           }}
           ago)</span
         >
-        <div>
-          <button class="btn btn-accent btn-sm">Take This Issue</button>
-        </div>
       </summary>
-      <div class="collapse-content">
+      <div class="collapse-content p-4 bg-secondary-content ">
+        <p>Description:</p>
+        <div class="mx-4 font-mono m-4 border-r-2 border p-4 ">{{ i.description }}</div>
         @if(i.customerInfo) {
-        <p>{{ i.customerInfo.firstName }} {{ i.customerInfo.lastName }}</p>
+        <p>
+          Logged By: {{ i.customerInfo.firstName }}
+          {{ i.customerInfo.lastName }}
+        </p>
         @if(i.customerInfo.contactChannel === 'Email') {
         <p>
           {{ i.customerInfo.firstName }} prefers to be contacted using Email:
@@ -38,21 +43,22 @@ import { UnassignedIncidentsService } from '../services/unassigned-incidents.ser
         </p>
         } @else {
         <p>
-          {{ i.customerInfo.firstName }} prefers to be contacted using Phone: {{
-            i.customerInfo.phoneNumber
-          }}
+          {{ i.customerInfo.firstName }} prefers to be contacted using Phone:
+          {{ i.customerInfo.phoneNumber }}
         </p>
         } }
+        <div class="mt-4">
+          <button class="btn btn-accent btn-sm">Take This Issue</button>
+        </div>
       </div>
     </details>
 
     } }
-  
   `,
-  styles: ``
+  styles: ``,
 })
 export class UnassignedIncidentListComponent {
- private readonly service = inject(UnassignedIncidentsService);
+  private readonly service = inject(UnassignedIncidentsService);
   unassigned = this.service.get().result;
   private getCustomerInfo = this.service.getContactForIncident();
 
