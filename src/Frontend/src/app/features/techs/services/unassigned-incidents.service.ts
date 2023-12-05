@@ -48,7 +48,6 @@ export class UnassignedIncidentsService {
       },
       onSuccess: (newContact, variables) => {
        return this.#client.setQueryData(['user', 'tech', 'unassigned-incidents'], (old:UnassignedIncidentsState[]) =>  {
-          console.log(old);
           return old.map((incident) => {
             if (incident.customerId === variables.userId) {
               return {
