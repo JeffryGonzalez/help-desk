@@ -1,7 +1,7 @@
 import { DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { formatDistanceToNow } from 'date-fns';
-import { UnassignedIncidentsService } from '../services/unassigned-incidents.service';
+import { UnassignedIncidentsService, UnassignedIncidentsState } from '../services/unassigned-incidents.service';
 
 @Component({
   selector: 'app-unassigned-incident-list',
@@ -48,7 +48,7 @@ import { UnassignedIncidentsService } from '../services/unassigned-incidents.ser
         </p>
         } }
         <div class="mt-4">
-          <button class="btn btn-accent btn-sm">Take This Issue</button>
+          <button (click)="assign(i)" class="btn btn-accent btn-sm">Take This Issue</button>
         </div>
       </div>
     </details>
@@ -61,11 +61,16 @@ export class UnassignedIncidentListComponent {
   private readonly service = inject(UnassignedIncidentsService);
   unassigned = this.service.get().result;
   private getCustomerInfo = this.service.getContactForIncident();
+  private assignIncident = this.service.assign();
 
   get(userId: string) {
     this.getCustomerInfo.mutate({ userId });
   }
   getHumanized(date: string) {
     return formatDistanceToNow(new Date(date));
+  }
+
+  assign(incident:UnassignedIncidentsState) {
+    this.assignIncident.mutate({incident})
   }
 }

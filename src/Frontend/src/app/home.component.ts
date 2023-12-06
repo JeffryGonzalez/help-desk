@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule],
   template: `
     <div>
-      <section>
+      <!-- <section>
         <div role="tablist" class="tabs tabs-bordered tabs-lg mb-4">
           <a
             routerLink="incidents"
@@ -26,7 +26,7 @@ import { RouterModule } from '@angular/router';
             >You</a
           >
         </div>
-      </section>
+      </section> -->
       <router-outlet />
     </div>
   `,

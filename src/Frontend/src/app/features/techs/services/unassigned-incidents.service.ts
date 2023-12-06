@@ -2,12 +2,12 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { UserMeta } from "@auth/auth.service";
 import { getApiUrl } from "@auth/index";
-import { QueryClient, injectMutation, injectQuery, injectQueryClient, queryOptions } from "@ngneat/query";
-import { ProfileService } from "app/features/user/features/profile/services";
+import { injectMutation, injectQuery, injectQueryClient, queryOptions } from "@ngneat/query";
 import { UserContact } from "app/features/user/features/profile/types";
 
-type UnassignedIncidentsState = {
+export type UnassignedIncidentsState = {
     id: string;
+    version: number;
     description:string;
     customerId: string;
     created: string;
@@ -64,4 +64,14 @@ export class UnassignedIncidentsService {
     })
   }
 
+  assign() {
+    return this.#mutation({
+      mutationFn: ({incident}:{incident: UnassignedIncidentsState}) => {
+        return this.#http.put(`${this.url}techs/${this.#streamId.id}/incidents/${incident.id}`, {id: incident.id, version: incident.version})
+      },
+      onSuccess: () => {
+        this.#client.invalidateQueries({queryKey: ['user', 'tech', 'unassigned-incidents']});
+      }
+    })
+  }
 }

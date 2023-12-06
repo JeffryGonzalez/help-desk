@@ -32,4 +32,5 @@ public class UnassignedTechIncidentsProjection : MultiStreamProjection<Unassigne
         };
     }
 
+    
 }

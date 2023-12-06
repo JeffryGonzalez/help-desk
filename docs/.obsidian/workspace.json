@@ -35,11 +35,9 @@
             "id": "71a36f76d14db465",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "excalidraw",
               "state": {
-                "file": "Plan.md",
-                "mode": "source",
-                "source": false
+                "file": "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md"
               }
             }
           }
@@ -110,7 +108,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Plan.md",
+                "file": "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -127,7 +125,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Plan.md",
+                "file": "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -150,7 +148,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Plan.md"
+                "file": "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md"
               }
             }
           }
@@ -175,15 +173,15 @@
   },
   "active": "71a36f76d14db465",
   "lastOpenFiles": [
-    "UserIncidents/Events.md",
+    "UserIncidents/Read Models.md",
+    "Plan.md",
     "UserIncidents/User Incidents.canvas",
     "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md",
-    "Plan.md",
+    "UserIncidents/Events.md",
     "Auth/Events.md",
     "UserIncidents/Commands.md",
     "Auth/Commands.md",
     "Auth/Auth.canvas",
-    "UserIncidents/Read Models.md",
     "Auth/auth.excalidraw.md",
     "Auth",
     "Excalidraw",
