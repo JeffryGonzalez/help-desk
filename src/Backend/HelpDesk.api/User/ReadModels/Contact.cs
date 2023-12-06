@@ -1,9 +1,10 @@
-﻿using HelpDesk.api.Auth;
+﻿using FluentValidation;
+using HelpDesk.api.Auth;
 using Marten.Events.Aggregation;
 using static HelpDesk.api.User.UserContactEvent;
 namespace HelpDesk.api.User.ReadModels;
 
-public record ContactState
+public record Contact
 {
     public Guid Id { get; set; }
     public int Version { get; set; }
@@ -13,27 +14,68 @@ public record ContactState
     public string PhoneNumber { get; set; } = string.Empty;
 
     public ContactChannelType ContactChannel { get; set; } = ContactChannelType.GeneratedBySystem;
+    public bool IsValid { get; set; } = false;
+    public IReadOnlyList<string>? ValidationErrors { get; set; } = null;
 }
 
-public class UserContactStateProjection : SingleStreamProjection<ContactState>
+public class ContactValidator : AbstractValidator<Contact>
 {
-    public ContactState Create(UserCreated @event)
+    public ContactValidator()
     {
-        return new ContactState { Id = @event.Id, Version = 1 };
+        RuleFor(c => c.FirstName).NotEmpty();
+        RuleFor(c => c.LastName).NotEmpty();
+        RuleFor(c => c.ContactChannel).NotEqual(ContactChannelType.GeneratedBySystem);
+        RuleFor(c => c.EmailAddress).EmailAddress();
+        RuleFor(c => c.EmailAddress).NotEmpty().When(c => c.ContactChannel == ContactChannelType.Email);
+        RuleFor(c => c.PhoneNumber).NotEmpty().When(c => c.ContactChannel == ContactChannelType.Phone);
+
+
     }
-    public ContactState Apply(UserContactEvent @event, ContactState current)
+
+}
+
+public class ContactProjection : SingleStreamProjection<Contact>
+{
+    public Contact Create(UserCreated @event)
+    {
+      
+        var contact = new Contact { Id = @event.Id, Version = 1 };
+        var (isValid, errors) = ValidationErrors(contact);
+        return contact with { ValidationErrors = errors, IsValid = isValid };
+    }
+    public Contact Apply(UserContactEvent @event, Contact current)
     {
 
-        return @event switch
+        var updated = @event switch
         {
             FirstNameUpdated e => current with { FirstName = e.Value, Version = current.Version++ },
-            LastNameUpdated e => current with { LastName = e.Value, Version = current.Version++ } ,
-            PhoneNumberUpdated e => current with { PhoneNumber = e.Value, Version = current.Version++ } ,
+            LastNameUpdated e => current with { LastName = e.Value, Version = current.Version++ },
+            PhoneNumberUpdated e => current with { PhoneNumber = e.Value, Version = current.Version++ },
             EmailAddressUpdated e => current with { EmailAddress = e.Value, Version = current.Version++ },
-            ContactMechanismUpdated e => current with  { ContactChannel = e.Value, Version = current.Version++ } ,
+            ContactMechanismUpdated e => current with { ContactChannel = e.Value, Version = current.Version++ },
             _ => throw new Exception("Chaos")
-        } ;
+        };
 
+        var (isValid, errors) = ValidationErrors(updated);
+
+        return updated with { ValidationErrors = errors, IsValid = isValid };
+
+    }
+
+    public static (bool, IReadOnlyList<string>?) ValidationErrors(Contact contact)
+    {
+
+        var validator = new ContactValidator();
+        var result = validator.Validate(contact);
+
+        if (result.IsValid)
+        {
+            return (true, null);
+        }
+        else
+        {
+            return (false, result.Errors.Select(e => e.ErrorMessage).ToList());
+        }
     }
 }
 
@@ -41,6 +83,6 @@ public enum ContactChannelType
 {
     Email,
     Phone,
-    InPerson,
     GeneratedBySystem
 }
+

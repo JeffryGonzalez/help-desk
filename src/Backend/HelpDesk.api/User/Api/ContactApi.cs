@@ -9,7 +9,7 @@ public static class ContactApi
 {
 
     [WolverineGet("api/users/{id:guid}/contact")]
-    public static IResult Get([Document] ContactState response)
+    public static IResult Get([Document] Contact response)
     {
         return TypedResults.Ok(response);
     }

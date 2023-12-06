@@ -1,4 +1,5 @@
 ﻿using HelpDesk.api.Incidents;
+using HelpDesk.api.User.ReadModels;
 using Marten.Events;
 using Marten.Events.Projections;
 
@@ -11,6 +12,7 @@ public record UnassignedIncident
     public string Description { get; set; } = string.Empty;
     public Guid CustomerId { get; set; }
     public DateTimeOffset Created { get; set; }
+    public IncidentStatus Status { get; set; }
 }
 
 public class UnassignedTechIncidentsProjection : MultiStreamProjection<UnassignedIncident, Guid>
@@ -28,7 +30,8 @@ public class UnassignedTechIncidentsProjection : MultiStreamProjection<Unassigne
             Version = 1,
             Created = logged.Timestamp,
             CustomerId = logged.Data.CustomerId,
-            Description = logged.Data.Description
+            Description = logged.Data.Description,
+            Status = IncidentStatus.Pending
         };
     }
 
