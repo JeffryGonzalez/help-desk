@@ -8,6 +8,7 @@ import { provideQueryDevTools } from '@ngneat/query-devtools';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideHttpClient(withInterceptors([secureApiInterceptor])),
     isDevMode() ? provideQueryDevTools() : [],

@@ -38,18 +38,7 @@ import { ProfileService } from './features/profile/services/profie.service';
                 >
                 }
               </li>
-              <li>
-                <a
-                  [ngClass]="{
-                    'pointer-events-none': store.contactInvalid(),
-                    'brightness-50': store.contactInvalid()
-                  }"
-                  routerLink="pending-incidents"
-                  class="btn btn-nav btm-nav-sm w-full mb-2"
-                >
-                  Pending<br />Incidents</a
-                >
-              </li>
+             
             </ul>
           </nav>
         </div>

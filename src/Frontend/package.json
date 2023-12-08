@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "e2e:dev": "playwright test --ui --project=chromium",
+    "e2e:dev:tech": "playwright test --ui --project=tech-logged-in",
     "e2e": "playwright test"
   },
   "private": true,

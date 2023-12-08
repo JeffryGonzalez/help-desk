@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, RouterModule],
+ 
   template: `
     <div>
       <!-- <section>
@@ -27,6 +28,7 @@ import { RouterModule } from '@angular/router';
           >
         </div>
       </section> -->
+    
       <router-outlet />
     </div>
   `,

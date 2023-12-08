@@ -22,6 +22,7 @@ import { RouterLink } from '@angular/router';
           <input
             #fn
             [disabled]="store.isSavingContact()"
+            data-testid="firstName"
             class="input input-bordered"
             type="text"
             id="firstName"
@@ -36,6 +37,7 @@ import { RouterLink } from '@angular/router';
           <input
             [disabled]="store.isSavingContact()"
             #ln
+            data-testid="lastName"
             class="input input-bordered"
             type="text"
             id="lastName"
@@ -52,6 +54,7 @@ import { RouterLink } from '@angular/router';
 
           <select
             #cm
+            data-testid="contactChannel"
             [disabled]="store.isSavingContact()"
             class="select w-full select-bordered"
             id="contactChannel"
@@ -75,6 +78,7 @@ import { RouterLink } from '@angular/router';
           <input
             [disabled]="store.isSavingContact()"
             #em
+            data-testid="emailAddress"
             class="input input-bordered"
             type="text"
             id="emailAddress"
@@ -89,6 +93,7 @@ import { RouterLink } from '@angular/router';
           <input
             [disabled]="store.isSavingContact()"
             #ph
+            data-testid="phoneNumber"
             class="input input-bordered"
             type="text"
             id="phoneNumber"
