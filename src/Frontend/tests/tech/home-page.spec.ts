@@ -1,8 +1,9 @@
 import { test, expect } from '../fixtures/home';
 
 test.describe('home page with tech logged in', () => {
-  test.beforeEach(async ({ homePage }) => {
+  test.beforeEach(async ({ homePage, profilePage }) => {
     await homePage.stubUser();
+    await profilePage.stubContact();
     await homePage.goHome();
   });
   test('tech link is visible', async ({ homePage, page }) => {
@@ -10,7 +11,6 @@ test.describe('home page with tech logged in', () => {
   });
 
   test('check profile', async ({ profilePage, page }) => {
-    await profilePage.stubContact();
     await profilePage.goProfile();
     await profilePage.verifyContact();
   });

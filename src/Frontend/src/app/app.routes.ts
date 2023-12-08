@@ -13,24 +13,14 @@ export const routes: Routes = [
     providers: [UserProfileStore],
     children: [
       {
+        path: '',
+        component: IncidentsListComponent,
+      },
+      {
         path: 'techs',
         component: TechsComponent
       },
-      {
-        path: 'incidents',
-        component: IncidentsComponent,
-        providers: [],
-        children: [
-          {
-            path: '',
-            component: IncidentsListComponent,
-          },
-          {
-            path: ':id',
-            component: IncidentItemComponent,
-          },
-        ],
-      },
+      
       {
         path: 'user',
         component: UserComponent,

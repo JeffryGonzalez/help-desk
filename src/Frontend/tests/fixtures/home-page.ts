@@ -1,28 +1,33 @@
 import { Locator, Page } from "@playwright/test";
-
+export type StubbedUserClaims = {
+  type: string;
+  value: string;
+}[];
+export const stubbedTechUser:StubbedUserClaims = [
+  {
+    type: 'stream_id',
+    value: '11111',
+  },
+  {
+    type: 'sub',
+    value: 'Buffy',
+  },
+  {
+    type: 'roles',
+    value: 'tech',
+  },
+];
 export class HomePage {
     private readonly techLink: Locator;
     constructor(public readonly page: Page) {
         this.techLink = page.getByRole('link', { name: 'Techs' });
      }
 
-     async stubUser() {
+     async stubUser({stubbedUserClaims}: { stubbedUserClaims?: StubbedUserClaims } = { }) {
+        stubbedUserClaims = stubbedUserClaims || stubbedTechUser;
           await this.page.route('/api/user', async (route) => {
-            const json = [
-              {
-                type: 'stream_id',
-                value: '11111',
-              },
-              {
-                type: 'sub',
-                value: 'Jeffry',
-              },
-              {
-                type: 'roles',
-                value: 'tech',
-              },
-            ];
-            await route.fulfill({ json });
+            
+            await route.fulfill({ json:stubbedUserClaims });
           });
      }
      async goHome() {
@@ -31,3 +36,4 @@ export class HomePage {
     
      getTechLink = () => this.techLink
 }
+

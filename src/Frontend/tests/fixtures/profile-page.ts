@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { UserContact } from 'app/features/user/features/profile/types';
+import { stubbedTechUser } from './home-page';
 
 const contactJson:UserContact = {
   firstName: 'Buffy',
@@ -24,9 +25,10 @@ export class ProfilePage {
     this.phoneNumber = page.getByTestId('phoneNumber');
   }
 
-  async stubContact(contact?: UserContact) {
+  async stubContact({contact, streamId}: {contact?:UserContact, streamId?:string} = {}) {
     contact = contact || contactJson;
-    await this.page.route('/api/users/11111/contact', async (route) => {
+    streamId = streamId || stubbedTechUser.find((item) => item.type === 'stream_id')?.value || '11111';
+    await this.page.route(`/api/users/${streamId}/contact`, async (route) => {
       await route.fulfill({ json: contact });
     });
     this.assignedContact = contact;
