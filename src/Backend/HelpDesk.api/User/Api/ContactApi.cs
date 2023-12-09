@@ -9,9 +9,16 @@ public static class ContactApi
 {
 
     [WolverineGet("api/users/{id:guid}/contact")]
-    public static IResult Get([Document] Contact response)
+    public static IResult Get(Guid id, [Document] Contact response)
     {
-        return TypedResults.Ok(response);
+        if (response is not null)
+        {
+            return TypedResults.Ok(response);
+        } else
+        {
+
+            return TypedResults.Ok(new Contact { Id = id });
+        }
     }
 
     [WolverinePut("/api/users/{id:guid}/contact/{op:required}")]
