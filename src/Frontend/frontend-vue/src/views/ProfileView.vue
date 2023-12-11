@@ -76,31 +76,12 @@
 
 </template>
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query';
-import { useAuthQuery } from '../components/api/auth';
-import { getContact, type Contact} from '../components/api/contact';
-
-const { data } = useAuthQuery();
-
-const userId = data.value?.id;
-
-const {isLoading, isError, data:contact} = useQuery<Contact>({
-  queryKey: ['user', 'contact'],
-  queryFn: () => getContact(userId!),
-  enabled: !!userId
+import { useGetContact, type Contact } from '../components/api/contact';
 
 
-})
+const {isLoading, data:contact} = useGetContact();
 
 
-
-// const contact:Contact = {
-//     firstName: 'Jeff',
-//     lastName: 'Gonzalez',
-//     contactChannel: 'emailAddress',
-//     emailAddress: 'jeff@aol.com',
-//     phoneNumber: ''
-// }
 const contactChannels = [
   {
     label: 'Select One',
@@ -138,7 +119,7 @@ function hasPhoneContactMechanism(node: any) {
 </script>
 
 <style>
-    .formkit-help {
-        @apply label label-text-alt
-    }
+ .formkit-help {
+    @apply label label-text-alt
+}
 </style>
