@@ -26,8 +26,8 @@ public class ContactValidator : AbstractValidator<Contact>
         RuleFor(c => c.LastName).NotEmpty();
         RuleFor(c => c.ContactChannel).NotEqual(ContactChannelType.GeneratedBySystem);
         RuleFor(c => c.EmailAddress).EmailAddress();
-        RuleFor(c => c.EmailAddress).NotEmpty().When(c => c.ContactChannel == ContactChannelType.Email);
-        RuleFor(c => c.PhoneNumber).NotEmpty().When(c => c.ContactChannel == ContactChannelType.Phone);
+        RuleFor(c => c.EmailAddress).NotEmpty().When(c => c.ContactChannel == ContactChannelType.EmailAddress);
+        RuleFor(c => c.PhoneNumber).NotEmpty().When(c => c.ContactChannel == ContactChannelType.PhoneNumber);
 
 
     }
@@ -36,10 +36,11 @@ public class ContactValidator : AbstractValidator<Contact>
 
 public class ContactProjection : SingleStreamProjection<Contact>
 {
-    public Contact Create(UserCreated @event)
+    public Contact Create(CreatedContactProfile @event)
     {
       
-        var contact = new Contact { Id = @event.Id, Version = 1 };
+        var contact = new Contact { Id = @event.Id, Version = 1, FirstName = @event.FirstName, LastName = @event.LastName, EmailAddress = @event.EmailAddress, ContactChannel = @event.ContactChannel, PhoneNumber = @event.PhoneNumber };
+
         var (isValid, errors) = ValidationErrors(contact);
         return contact with { ValidationErrors = errors, IsValid = isValid };
     }
@@ -81,8 +82,8 @@ public class ContactProjection : SingleStreamProjection<Contact>
 
 public enum ContactChannelType
 {
-    Email,
-    Phone,
+    EmailAddress,
+    PhoneNumber,
     GeneratedBySystem
 }
 

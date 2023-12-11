@@ -1,7 +1,7 @@
 
-import axios from 'axios'
-import { useAuthQuery } from './auth';
 import { useQuery, type UseQueryReturnType } from '@tanstack/vue-query';
+import axios from 'axios';
+import { useAuthQuery } from './auth';
 
 export type Contact =  {
     firstName: string;
@@ -25,7 +25,14 @@ export function useGetContact():UseQueryReturnType<Contact, Error> {
     const result = useQuery<Contact>({
         queryKey: ['user', 'contact'],
         queryFn: () => getContact(userId!),
-        enabled: !!userId
+        enabled: !!userId,
+        retry: (_, error) => {
+            const e = error as any;
+            if (e?.response?.status === 404) return false
+            return true
+        },
+       
     })
     return result;
 }
+

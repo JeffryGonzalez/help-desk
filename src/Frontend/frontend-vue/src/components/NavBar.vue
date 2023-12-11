@@ -11,7 +11,7 @@ const { isTech } = useAuthStore()
     <div class="flex-none">
       <ul class="menu menu-horizontal px-1">
         <li v-if="isTech"><RouterLink to="techs">Techs</RouterLink></li>
-        <li><RouterLink to="profile">Profile</RouterLink></li>
+      
         <li><a class="btn btn-info btn-sm" href="/api/logout">Log Off</a></li>
       </ul>
     </div>

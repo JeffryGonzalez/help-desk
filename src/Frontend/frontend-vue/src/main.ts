@@ -14,6 +14,7 @@ axios.interceptors.request.use(function (config) {
 import App from './App.vue'
 import router from './router'
 
+
 const app = createApp(App)
 app.use(plugin, defaultConfig(formKitConfig));
 app.use(createPinia())

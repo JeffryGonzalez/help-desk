@@ -1,7 +1,12 @@
-﻿namespace HelpDesk.api.User;
+﻿using HelpDesk.api.User.ReadModels;
 
+namespace HelpDesk.api.User;
+
+
+public record CreateContactProfile(Guid Id, string FirstName, string LastName, string EmailAddress, string PhoneNumber, ContactChannelType ContactChannel);
 public abstract record UserContactInformationCommand(Guid Id, string Value)
 {
+    
     public record ModifyFirstName(Guid Id, string Value) : UserContactInformationCommand(Id, Value);
     public record ModifyLastName(Guid Id, string Value) : UserContactInformationCommand(Id, Value);
     public record ModifyEmailAddress(Guid Id, string Value) : UserContactInformationCommand(Id, Value);

@@ -27,9 +27,10 @@ export function useAuthQuery(): UseQueryReturnType<UserState, Error> {
     queryKey: ['user'],
     queryFn: getUser,
     retry: (_, error) => {
-      const e = error as unknown as { status: number }
-      if (e?.status === 401) return false
-      return false
+      console.log(error);
+      const e = error as any;
+      if (e?.response?.status === 401) return false
+      return true
     },
    refetchInterval: 50_000
   })

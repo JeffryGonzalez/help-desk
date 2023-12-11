@@ -4,6 +4,7 @@ namespace HelpDesk.api.User;
 
 public abstract record UserContactEvent
 {
+    public record CreatedContactProfile(Guid Id, string FirstName, string LastName, string EmailAddress, string PhoneNumber, ContactChannelType ContactChannel);
     public record FirstNameUpdated(string Value) : UserContactEvent;
     public record LastNameUpdated(string Value) : UserContactEvent;
     public record EmailAddressUpdated(string Value) : UserContactEvent;

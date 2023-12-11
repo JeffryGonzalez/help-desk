@@ -52,9 +52,19 @@
                 "file": "Excalidraw/Drawing 2023-12-06 11.32.25.excalidraw.md"
               }
             }
+          },
+          {
+            "id": "c6458b520a3ee560",
+            "type": "leaf",
+            "state": {
+              "type": "excalidraw",
+              "state": {
+                "file": "Excalidraw/Drawing 2023-12-11 10.09.53.excalidraw.md"
+              }
+            }
           }
         ],
-        "currentTab": 3
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -120,7 +130,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Excalidraw/Drawing 2023-12-06 11.32.25.excalidraw.md",
+                "file": "Excalidraw/Drawing 2023-12-11 10.09.53.excalidraw.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -137,7 +147,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Excalidraw/Drawing 2023-12-06 11.32.25.excalidraw.md",
+                "file": "Excalidraw/Drawing 2023-12-11 10.09.53.excalidraw.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -160,7 +170,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Excalidraw/Drawing 2023-12-06 11.32.25.excalidraw.md"
+                "file": "Excalidraw/Drawing 2023-12-11 10.09.53.excalidraw.md"
               }
             }
           }
@@ -183,10 +193,11 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "a21e879194ba6d28",
+  "active": "c6458b520a3ee560",
   "lastOpenFiles": [
-    "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md",
     "Excalidraw/Drawing 2023-12-06 11.32.25.excalidraw.md",
+    "Excalidraw/Drawing 2023-12-11 10.09.53.excalidraw.md",
+    "UserIncidents/Drawing 2023-12-02 11.11.50.excalidraw.md",
     "Plan.md",
     "UserIncidents/Read Models.md",
     "UserIncidents/User Incidents.canvas",

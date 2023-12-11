@@ -7,6 +7,11 @@ namespace HelpDesk.api.User;
 
 public static class ContactHandler
 {
+    public static async Task HandleAsync(CreateContactProfile command, IDocumentSession session)
+    {
+        session.Events.Append(command.Id, new CreatedContactProfile(command.Id, command.FirstName, command.LastName, command.EmailAddress, command.PhoneNumber, command.ContactChannel));
+        await session.SaveChangesAsync();
+    }
     public static async Task HandleAsync(ModifyFirstName command, IDocumentSession session)
     {
         

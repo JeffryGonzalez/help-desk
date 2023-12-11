@@ -1,7 +1,6 @@
 using Duende.Bff;
 using HelpDesk.api.Auth;
 using HelpDesk.api.Auth.ReadModels;
-using HelpDesk.api.Tech.ReadModels;
 using HelpDesk.api.User.ReadModels;
 using Marten;
 using Marten.Events.Projections;
@@ -56,9 +55,6 @@ builder.Services.AddMarten(options =>
     options.Connection(connectionString);
     options.Projections.Add<AuthSummaryProjection>(ProjectionLifecycle.Inline);
     options.Projections.Add<ContactProjection>(ProjectionLifecycle.Inline);
-    options.Projections.Add<StagedUserIncidentsProjections>(ProjectionLifecycle.Inline);
-    options.Projections.Add<CustomerIncidentSummaryProjection>(ProjectionLifecycle.Inline);
-    options.Projections.Add<UnassignedTechIncidentsProjection>(ProjectionLifecycle.Inline);
     options.UseDefaultSerialization(
         EnumStorage.AsString,
          nonPublicMembersStorage: NonPublicMembersStorage.All,
