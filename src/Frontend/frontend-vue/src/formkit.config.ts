@@ -21,6 +21,11 @@ const config: DefaultConfigOptions = {
         inner:'$reset ',
        
         input: '$reset select select-bordered '
+      },
+      textarea: {
+        outer: '$reset form-control',
+        inner:'$reset ',
+        input: '$reset textarea textarea-bordered'
       }
       
     })

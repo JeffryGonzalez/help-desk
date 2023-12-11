@@ -55,13 +55,15 @@ builder.Services.AddMarten(options =>
     options.Connection(connectionString);
     options.Projections.Add<AuthSummaryProjection>(ProjectionLifecycle.Inline);
     options.Projections.Add<ContactProjection>(ProjectionLifecycle.Inline);
+    options.Projections.Add<IssueProjections>(ProjectionLifecycle.Inline);
+    options.Projections.Add<CustomerIssueSummaryProjection>(ProjectionLifecycle.Async);
     options.UseDefaultSerialization(
         EnumStorage.AsString,
          nonPublicMembersStorage: NonPublicMembersStorage.All,
             serializerType: SerializerType.SystemTextJson
         );
 
-}).UseLightweightSessions().IntegrateWithWolverine();
+}).UseLightweightSessions().IntegrateWithWolverine().AddAsyncDaemon(Marten.Events.Daemon.Resiliency.DaemonMode.Solo);
 
 builder.Host.UseWolverine(opts =>
 {

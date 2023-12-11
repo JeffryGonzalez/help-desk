@@ -19,7 +19,9 @@ export default {
     "input",
     "input-bordered",
     "select",
-    "select-bordered"
+    "select-bordered",
+    "textarea",
+    "textarea-bordered",
   ]
 }
 

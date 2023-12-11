@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import CreateIssue from '@/components/CreateIssue.vue';
+import UserIssueList from '@/components/UserIssueList.vue';
 import { useGetContact } from '@/components/api/contact';
 import { effect } from 'vue';
 import { useRouter } from 'vue-router';
@@ -18,10 +20,12 @@ effect(() => {
 
 <template>
   <main>
-    <h2>Home</h2>
+
     <div v-if="isLoading">Loading...</div>
     <div v-else-if="data">
-      <p>Welcome {{  data?.firstName }}</p>
+      <p>Welcome {{  data?.firstName }} {{  data?.lastName }}</p>
+      <CreateIssue />
+      <UserIssueList />
     </div>
   </main>
 </template>
