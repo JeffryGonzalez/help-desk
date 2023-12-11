@@ -25,7 +25,7 @@
 
       <FormKit
         :validation-rules="{ hasEmailContactMechanism }"
-        validation="hasEmailContactMechanism|email"
+        validation="email|+hasEmailContactMechanism"
         id="emailAddress"
         placeholder="joe@aol.com"
         type="text"
