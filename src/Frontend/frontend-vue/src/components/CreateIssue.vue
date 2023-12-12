@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { useMutation } from '@tanstack/vue-query';
-import { useAuthQuery } from './api/auth';
-
-const {data} = useAuthQuery();
 import { reset } from '@formkit/core';
 import { useAddUserIssue } from './api/issues';
+
 
 const { mutate, isPending} = useAddUserIssue();
 
@@ -16,7 +13,7 @@ function submitHandler(val:{description:string}) {
 </script>
 
 <template>
-    <h1>Create an Issue</h1>
+   <h2 class="text-2xl font-bold py-4">Create an Issue</h2>
     <FormKit type="form" @submit="submitHandler" :vi-if="!isPending" id="issue-form">
         <FormKit type="textarea" validation="required|length:5,256" name="description"></FormKit>
     </FormKit>

@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import axios from "axios";
+import { useMutation, useQuery, useQueryClient, type UseMutationReturnType, type UseQueryReturnType } from "@tanstack/vue-query";
+import axios, { AxiosError } from "axios";
 import { useAuthQuery } from "./auth";
 
 export type IssueWithDetails = {
@@ -26,7 +26,7 @@ async function getUserIssues(userId:string): Promise<IssueWithDetails[]> {
    return data;
 }
 
-export function useGetUserIssues() {
+export function useGetUserIssues(): UseQueryReturnType<IssueWithDetails[], Error> {
     const {data} = useAuthQuery();
     const userId = data.value?.id;
     const result = useQuery<IssueWithDetails[]>({
@@ -47,7 +47,7 @@ export function useAddUserIssue() {
     const {data} = useAuthQuery();
     const userId = data.value?.id;
     const client = useQueryClient();
-    const result = useMutation({
+    return useMutation<IssueWithDetails, AxiosError, string, () => void>({
        mutationFn: (description:string) => addUserIssue({userId:userId!, description}),
        onSuccess: (data) => {
            client.setQueryData(['user', 'issues'], (old:IssueWithDetails[]|undefined) => {
@@ -58,6 +58,6 @@ export function useAddUserIssue() {
            })
        }
     })
-    return result;
+   
 }
 
