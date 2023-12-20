@@ -6,10 +6,12 @@ import { formatDate, useTimeAgo } from '@vueuse/core';
 import type { IssueWithDetails } from './api/issues';
 
 const timeAgo = useTimeAgo(new Date(props.issue.created));
+
+
 </script>
 
 <template>
- <div class="card bg-base-300 shadow-xl mb-4">
+ <div class="card bg-base-300 shadow-xl mb-4 issue-item" v-motion-pop>
           <div class="card-body">
             <h2 class="card-title">Pending Issue</h2>
             <p>
@@ -31,3 +33,11 @@ const timeAgo = useTimeAgo(new Date(props.issue.created));
         </div>
 
 </template>
+
+<style>
+.issue-item {
+  width: 100%;
+  min-width: 100vw;
+}
+
+</style>

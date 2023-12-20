@@ -8,6 +8,7 @@ using Marten.Services.Json;
 using Newtonsoft.Json.Converters;
 using Oakton;
 using System.Text.Json.Serialization;
+using HelpDesk.api.Techs.ReadModels;
 using Weasel.Core;
 using Wolverine;
 using Wolverine.Http;
@@ -57,6 +58,7 @@ builder.Services.AddMarten(options =>
     options.Projections.Add<ContactProjection>(ProjectionLifecycle.Inline);
     options.Projections.Add<IssueProjections>(ProjectionLifecycle.Inline);
     options.Projections.Add<CustomerIssueSummaryProjection>(ProjectionLifecycle.Async);
+    options.Projections.Add<PendingIssuesSummaryProjection>(ProjectionLifecycle.Async);
     options.UseDefaultSerialization(
         EnumStorage.AsString,
          nonPublicMembersStorage: NonPublicMembersStorage.All,

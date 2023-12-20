@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import { plugin, defaultConfig } from '@formkit/vue'
 import formKitConfig from './formkit.config';
+import { MotionPlugin } from '@vueuse/motion'
 axios.interceptors.request.use(function (config) {
   config.headers.set('X-CSRF', '1')
   return config
@@ -20,5 +21,6 @@ app.use(plugin, defaultConfig(formKitConfig));
 app.use(createPinia())
 app.use(router)
 app.use(VueQueryPlugin)
+app.use(MotionPlugin)
 
 app.mount('#app')

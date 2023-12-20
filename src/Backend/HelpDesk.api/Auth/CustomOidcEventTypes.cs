@@ -5,14 +5,9 @@ using Wolverine;
 namespace HelpDesk.api.Auth;
 
 // TODO #1 Rename this. @JeffryGonzalez
-public class CustomOidcEventTypes : BffOpenIdConnectEvents
+public class CustomOidcEventTypes(ILogger<BffOpenIdConnectEvents> logger, IMessageBus bus)
+    : BffOpenIdConnectEvents(logger)
 {
-    private readonly IMessageBus _bus;
-
-    public CustomOidcEventTypes(ILogger<BffOpenIdConnectEvents> logger, IMessageBus bus) : base(logger)
-    {
-        _bus = bus;
-    }
     public override async Task TokenValidated(TokenValidatedContext context)
     {
         var identity = context?.Principal?.Identity;
@@ -20,10 +15,10 @@ public class CustomOidcEventTypes : BffOpenIdConnectEvents
         {
             var sub = context.Principal.Claims.SingleOrDefault(c => c.Type == "sub");
             var iss = context.Principal.Claims.SingleOrDefault(c => c.Type == "iss")?.Value;
-            var isTech = context.Principal.Claims.Any(c => c.Type == "roles" && c.Value == "tech");
+            var isTech = context.Principal.Claims.Any(c => c is { Type: "roles", Value: "tech" });
             if (sub is not null)
             {
-                await _bus.PublishAsync(new ProcessLogin(sub.Value, iss ?? "", isTech));
+                await bus.PublishAsync(new ProcessLogin(sub.Value, iss ?? "", isTech));
 
             }
         }

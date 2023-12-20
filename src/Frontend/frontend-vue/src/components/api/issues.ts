@@ -25,7 +25,18 @@ async function getUserIssues(userId:string): Promise<IssueWithDetails[]> {
    const {data} = await axios.get<IssueWithDetails[]>(`/api/users/${userId}/issues`)
    return data;
 }
+async function getPendingIssuesForTech(): Promise<IssueWithDetails[]> {
+   return await axios.get<{issues: IssueWithDetails[]}>(`/api/techs/pending-issues`).then(res => res.data.issues)
+}
 
+export function useGetPendingIssuesForTech(): UseQueryReturnType<IssueWithDetails[], Error> {
+    const result = useQuery<IssueWithDetails[]>({
+        queryKey: ['tech', 'pending-issues'],
+        queryFn: () => getPendingIssuesForTech(),
+        enabled: true
+    })
+    return result;
+}
 export function useGetUserIssues(): UseQueryReturnType<IssueWithDetails[], Error> {
     const {data} = useAuthQuery();
     const userId = data.value?.id;

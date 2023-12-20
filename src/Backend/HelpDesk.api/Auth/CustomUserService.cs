@@ -6,14 +6,11 @@ using Microsoft.Extensions.Options;
 
 namespace HelpDesk.api.Auth;
 
-public class CustomUserService : DefaultUserService
+public class CustomUserService(IOptions<BffOptions> options, ILoggerFactory loggerFactory, IQuerySession session)
+    : DefaultUserService(options, loggerFactory)
 {
-    private readonly IDocumentSession _session;
     private Guid _userId;
-    public CustomUserService(IOptions<BffOptions> options, ILoggerFactory loggerFactory, IDocumentSession session) : base(options, loggerFactory)
-    {
-        _session = session;
-    }
+
     public override async Task ProcessRequestAsync(HttpContext context)
     {
         var identity = context.User.Identity;
@@ -23,7 +20,7 @@ public class CustomUserService : DefaultUserService
 
             if (sub is not null)
             {
-                var user = await _session.Query<AuthSummary>().SingleOrDefaultAsync(u => u.Sub == sub.Value);
+                var user = await session.Query<AuthSummary>().SingleOrDefaultAsync(u => u.Sub == sub.Value);
                 if (user is not null)
                 {
                     _userId = user.Id;
@@ -33,10 +30,7 @@ public class CustomUserService : DefaultUserService
 
         await base.ProcessRequestAsync(context);
     }
-    protected override IEnumerable<ClaimRecord> GetManagementClaims(HttpContext context, AuthenticateResult authenticateResult)
-    {
-        return base.GetManagementClaims(context, authenticateResult);
-    }
+
 
     protected override IEnumerable<ClaimRecord> GetUserClaims(AuthenticateResult authenticateResult)
     {

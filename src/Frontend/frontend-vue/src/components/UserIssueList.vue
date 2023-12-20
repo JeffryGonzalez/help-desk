@@ -20,8 +20,8 @@ effect(() => {
   <div v-if="isLoading">Loading...</div>
   <div v-else-if="isError">Error</div>
   <div v-else>
-    <p v-if="sorted.length === 0">You have current issues!</p>
-    <ul v-else>
+    <p v-if="sorted.length === 0">You have no current issues!</p>
+    <ul v-else class="issue-list">
       <li v-for="issue in sorted" :key="issue.id">
         <UserIssueListItem :issue="issue" />
         
@@ -29,3 +29,13 @@ effect(() => {
     </ul>
   </div>
 </template>
+
+<style>
+.issue-list {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+</style>

@@ -13,7 +13,7 @@ export type Contact =  {
 
 
 
-async function getContact<Contact>(id:string) {
+export async function getContact<Contact>(id:string) {
    const {data} = await axios.get<Contact>(`/api/users/${id}/contact`)
    return data;
 }
@@ -36,3 +36,17 @@ export function useGetContact():UseQueryReturnType<Contact, Error> {
     return result;
 }
 
+export function useGetContactForIssue(userId:string) {
+    const result = useQuery<Contact>({
+        queryKey: ['users', 'contact', userId],
+        queryFn: () => getContact(userId),
+        
+        retry: (_, error) => {
+            const e = error as any;
+            if (e?.response?.status === 404) return false
+            return true
+        },
+       
+    })
+    return result;
+}

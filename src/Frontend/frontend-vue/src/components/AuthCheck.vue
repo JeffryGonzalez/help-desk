@@ -6,7 +6,7 @@ import { useClipboard } from '@vueuse/core'
 import IconCopy from '@/components/icons/IconCopy.vue'
 const { isLoading, isError, data } = useAuthQuery()
 const roles = ref(`{
-  roles: ["tech"]  
+  "roles": ["tech"]  
 }`)
 
 const { copy } = useClipboard()
