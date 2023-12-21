@@ -3,6 +3,7 @@ import { useQuery, type UseQueryReturnType } from '@tanstack/vue-query';
 import axios from 'axios';
 import { useAuthQuery } from './auth';
 
+
 export type Contact =  {
     firstName: string;
     lastName: string;

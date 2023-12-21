@@ -15,6 +15,13 @@
             <span class="text-lg font-bold">Logged {{ formatDate(new Date(issue.created), 'dddd MMM Do, YYYY') }} </span>
             {{ formatDate(new Date(issue.created), 'h:m:s A') }} ({{ timeAgo }}).
           </p>
+          <p>{{ issue.contact.firstName }} {{  issue.contact.lastName }}</p>
+          <p v-if="issue.contact.contactChannel === 'EmailAddress'">
+            {{ issue.contact.emailAddress }}
+            </p>
+            <p v-else>
+              {{  issue.contact.phoneNumber }}
+            </p>
           <p class="font-mono text-sm p-4 bg-slate-950 text-slate-300">
             {{ issue.description }}
           </p>
@@ -34,8 +41,10 @@
 
 <script setup lang="ts">
 import { formatDate, useTimeAgo } from '@vueuse/core';
-import type { IssueWithDetails } from './api/issues';
-import { useGetContactForIssue } from './api/contact';
+import type { TechIssueWithDetails } from './api/issues';
+import { useAssignTechToIssue } from './api/issues';
+
+const {mutate, isPending} = useAssignTechToIssue();
 
 function handle(what: 'next' | 'prev') {
  if(what === 'next') {
@@ -47,7 +56,7 @@ function handle(what: 'next' | 'prev') {
 }
 
 const props = defineProps<{
-  issue: IssueWithDetails
+  issue: TechIssueWithDetails
   current:number
   numberOfIssues: number
 }>()
@@ -60,7 +69,8 @@ const emits = defineEmits<{
 const timeAgo = useTimeAgo(new Date(props.issue.created), { controls: false})
 
 function onAdoptIssue(id: string) {
-  console.log('adopting issue', id)
+  console.log('adopting issue', id);
+  mutate(id);
   timeAgo.effect.stop();
   
 }

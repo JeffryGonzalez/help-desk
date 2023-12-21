@@ -6,7 +6,7 @@ import { useAddUserIssue } from './api/issues';
 const { mutate, isPending} = useAddUserIssue();
 
 function submitHandler(val:{description:string}) {
-    console.log('submitHandler', val);
+
    mutate(val.description);
    reset("issue-form");
 }

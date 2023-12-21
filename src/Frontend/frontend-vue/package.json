@@ -18,7 +18,7 @@
   "dependencies": {
     "@formkit/icons": "^1.4.0",
     "@formkit/vue": "^1.4.0",
-    "@tanstack/vue-query": "^5.14.1",
+    "@tanstack/vue-query": "^5.14.4",
     "@vueuse/components": "^10.7.0",
     "@vueuse/core": "^10.7.0",
     "@vueuse/motion": "^2.0.0",

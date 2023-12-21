@@ -1,6 +1,7 @@
-import { useMutation, useQuery, useQueryClient, type UseMutationReturnType, type UseQueryReturnType } from "@tanstack/vue-query";
+import { useMutation, useQuery, useQueryClient, type UseQueryReturnType } from "@tanstack/vue-query";
 import axios, { AxiosError } from "axios";
 import { useAuthQuery } from "./auth";
+import { type Contact } from "./contact";
 
 export type IssueWithDetails = {
     id: string;
@@ -14,6 +15,9 @@ export type IssueWithDetails = {
 async function addUserIssue({userId,description}: {userId: string, description:string}) {
     const {data }= await axios.post<IssueWithDetails>(`/api/users/${userId}/issues`, {description});
   return data;
+}
+async function assignTechToIssue({issueId, techId}: {issueId: string, techId:string}) {
+    return await axios.post(`/api/techs/${techId}/issues/current/`, {id: issueId});
 }
 
 async function getIssueWithDetails(userId:string,issueId:string): Promise<IssueWithDetails> {
@@ -29,8 +33,11 @@ async function getPendingIssuesForTech(): Promise<IssueWithDetails[]> {
    return await axios.get<{issues: IssueWithDetails[]}>(`/api/techs/pending-issues`).then(res => res.data.issues)
 }
 
-export function useGetPendingIssuesForTech(): UseQueryReturnType<IssueWithDetails[], Error> {
-    const result = useQuery<IssueWithDetails[]>({
+export type TechIssueWithDetails = IssueWithDetails & {
+    contact: Contact
+}
+export function useGetPendingIssuesForTech(): UseQueryReturnType<TechIssueWithDetails[], Error> {
+    const result = useQuery<TechIssueWithDetails[]>({
         queryKey: ['tech', 'pending-issues'],
         queryFn: () => getPendingIssuesForTech(),
         enabled: true
@@ -72,3 +79,14 @@ export function useAddUserIssue() {
    
 }
 
+export function useAssignTechToIssue() {
+    const {data} = useAuthQuery();
+    const techId = data.value?.id;
+    const client = useQueryClient();
+    return useMutation<void, AxiosError, string, () => void>({
+         mutationFn: (issueId:string) => assignTechToIssue({techId:techId!, issueId}),
+         onSuccess: () => {
+              client.invalidateQueries({ queryKey: ['tech', 'pending-issues'] });
+         }
+     })
+}
